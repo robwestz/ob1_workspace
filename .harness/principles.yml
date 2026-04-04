@@ -1,0 +1,220 @@
+version: "1.0"
+
+principles:
+  - id: no-thoughts-mutation
+    name: Never Mutate the Core Thoughts Table
+    description: >
+      The thoughts table is the foundation of every Open Brain instance.
+      Adding columns is fine; altering, renaming, or dropping existing columns
+      is never acceptable.
+    rationale: >
+      Every extension, recipe, skill, and integration depends on the thoughts
+      table schema being stable. A single column rename or drop would break
+      every community contribution simultaneously. Agents must treat the
+      existing column set as immutable.
+    enforcement: ci
+    enforcement_detail: SQL lint rule in ob1-gate.yml scans all .sql files for ALTER TABLE thoughts (DROP|ALTER|RENAME) patterns
+    severity: error
+    examples:
+      good:
+        code: "ALTER TABLE thoughts ADD COLUMN custom_field text;"
+        explanation: Adding a new column extends the schema without breaking existing consumers
+      bad:
+        code: "ALTER TABLE thoughts DROP COLUMN body;"
+        explanation: Dropping an existing column breaks every query that references it across the entire ecosystem
+    violation_message: |
+      WHAT: You are modifying an existing column on the core thoughts table.
+      WHY: The thoughts table schema is the contract that every OB1 extension,
+           recipe, and integration depends on. Changing it breaks the entire ecosystem.
+      FIX: If you need additional data, ADD a new column instead. If you need to
+           change how existing data is used, create a view or a companion table.
+      REF: AGENTS.md Rule 1, CLAUDE.md Guard Rails, CONTRIBUTING.md Rule 5.
+
+  - id: no-secrets-in-code
+    name: No Credentials or Secrets in Any File
+    description: >
+      Never commit API keys, passwords, tokens, or other credentials.
+      Use environment variables or secret managers (Keychain, Doppler).
+    rationale: >
+      Agents generate code fast and may embed secrets from context.
+      A leaked key in git history is permanent — even force-pushing
+      cannot fully remove it from forks or caches.
+    enforcement: ci
+    enforcement_detail: Secret detection regex in ob1-gate.yml scans for AWS, GitHub, Anthropic, and generic API key patterns
+    severity: error
+    examples:
+      good:
+        code: "const key = process.env.ANTHROPIC_API_KEY;"
+        explanation: Read from environment variable at runtime
+      bad:
+        code: 'const key = "sk-ant-api03-abc123...";'
+        explanation: Hardcoded secret will be committed to git history
+    violation_message: |
+      WHAT: Possible secret or credential detected in {{filepath}}.
+      WHY: Secrets in code are permanently exposed in git history.
+           Even deletion leaves them recoverable from forks and caches.
+      FIX: Move the value to an environment variable or secret manager.
+           Use process.env.KEY_NAME in code.
+      REF: AGENTS.md Rule 2, CLAUDE.md Guard Rails.
+
+  - id: remote-mcp-only
+    name: MCP Servers Must Be Remote Edge Functions
+    description: >
+      All MCP servers must be deployed as Supabase Edge Functions.
+      Never use StdioServerTransport, local Node.js servers, or
+      claude_desktop_config.json for MCP.
+    rationale: >
+      Remote MCP ensures the memory system works from any device
+      and any AI client. Local MCP servers break multi-device access
+      and create single-point-of-failure dependencies.
+    enforcement: review
+    severity: error
+    examples:
+      good:
+        code: "// Edge Function in functions/agent-memory/index.ts\nDeno.serve(async (req) => { ... })"
+        explanation: Deployed to Supabase, accessible from any client
+      bad:
+        code: 'const transport = new StdioServerTransport();'
+        explanation: Local-only server, breaks multi-device architecture
+    violation_message: |
+      WHAT: Local MCP server pattern detected in {{filepath}}.
+      WHY: OB1's architecture requires remote MCP servers so memory is
+           accessible from any device (Mac, Windows, mobile).
+      FIX: Deploy as a Supabase Edge Function. See docs/01-getting-started.md
+           Step 7 for the Edge Function MCP pattern.
+      REF: AGENTS.md Rule 3, CLAUDE.md Guard Rails.
+
+  - id: contribution-structure
+    name: Every Contribution Has README + metadata.json
+    description: >
+      Each contribution lives in its own subfolder under the right
+      category and must include both README.md and metadata.json.
+    rationale: >
+      Agents discover and evaluate contributions via metadata.json.
+      Without it, CI gates fail and the contribution is invisible
+      to automated tooling. README is the human-facing contract.
+    enforcement: ci
+    enforcement_detail: ob1-gate.yml Rule 2 validates folder structure and required files
+    severity: error
+    examples:
+      good:
+        code: "recipes/my-recipe/README.md + recipes/my-recipe/metadata.json"
+        explanation: Self-contained folder with both required files
+      bad:
+        code: "recipes/my-recipe.sql"
+        explanation: No subfolder, no README, no metadata — invisible to tooling
+    violation_message: |
+      WHAT: Contribution at {{dirpath}} is missing {{missing_file}}.
+      WHY: CI gate (ob1-gate.yml) requires README.md + metadata.json
+           for every contribution. Without them, the PR will fail.
+      FIX: Create the missing file. See CONTRIBUTING.md for templates
+           and .github/metadata.schema.json for the metadata format.
+      REF: AGENTS.md Rule 4, CONTRIBUTING.md.
+
+  - id: forward-only-deps
+    name: Forward-Only Dependencies Between Layers
+    description: >
+      Within each domain, dependencies flow forward only:
+      Types → Config → Repo → Service → Runtime → UI.
+      A types module never imports from service.
+    rationale: >
+      Reverse dependencies create circular imports and make domains
+      unpredictable. Agents that follow forward-only rules produce
+      code that compiles on the first try.
+    enforcement: review
+    severity: error
+    examples:
+      good:
+        code: "// runtime/conversation-runtime.ts imports from types.ts\nimport { SessionConfig } from './types.js';"
+        explanation: Runtime imports from Types — forward direction
+      bad:
+        code: "// types.ts imports from conversation-runtime.ts\nimport { runLoop } from './conversation-runtime.js';"
+        explanation: Types importing from Runtime — reverse direction
+    violation_message: |
+      WHAT: Reverse dependency in {{filepath}} — {{source_layer}} imports
+           from {{target_layer}}.
+      WHY: The forward-only rule (Types→Config→Repo→Service→Runtime→UI)
+           prevents circular dependencies and unpredictable compilation.
+      FIX: Move the shared type/interface to the Types layer, or inject
+           the dependency through a cross-cutting Provider.
+      REF: ARCHITECTURE.md Dependency Rules, .harness/domains.yml.
+
+  - id: parse-at-boundaries
+    name: Parse and Validate at System Boundaries
+    description: >
+      Edge Functions validate input shapes at the API boundary.
+      The runtime trusts typed data from the API layer.
+      Don't scatter validation throughout internal code.
+    rationale: >
+      Agents adding validation inside service layers create redundant
+      checks that slow code and obscure the real contract. One clear
+      boundary parse means all downstream code works with typed data.
+    enforcement: review
+    severity: warning
+    examples:
+      good:
+        code: "// Edge Function validates\nconst { action, session_id } = validateInput(body);\nawait handleAction(action, session_id);"
+        explanation: Validation at the boundary, handler receives typed data
+      bad:
+        code: "// Deep inside a service\nif (typeof sessionId !== 'string') throw new Error('...');"
+        explanation: Redundant validation far from the boundary
+    violation_message: |
+      WHAT: Input validation found deep inside {{filepath}} (not at boundary).
+      WHY: Boundary parsing means all downstream code trusts typed data.
+           Scattered validation creates redundant checks and unclear contracts.
+      FIX: Move validation to the Edge Function handler or API boundary.
+           Internal code should receive already-typed parameters.
+      REF: .harness/principles.yml, docs/design-docs/core-beliefs.md.
+
+  - id: budget-before-call
+    name: Budget Check Before Every LLM Call
+    description: >
+      Every LLM invocation must check the budget (tokens, USD, turns)
+      before making the API call. No unchecked calls.
+    rationale: >
+      Runaway agents are the #1 operational risk. A single missing
+      budget check can burn through $100+ in minutes. The budget
+      tracker is the circuit breaker.
+    enforcement: review
+    severity: error
+    examples:
+      good:
+        code: "if (!budgetTracker.canContinue()) {\n  return { stopReason: 'budget_exhausted' };\n}\nconst response = await anthropic.messages.create(...);"
+        explanation: Budget checked before API call
+      bad:
+        code: "const response = await anthropic.messages.create(...);\nbudgetTracker.record(response.usage);"
+        explanation: Budget only recorded after — no pre-check to prevent overspend
+    violation_message: |
+      WHAT: LLM API call in {{filepath}} without preceding budget check.
+      WHY: Unchecked LLM calls can exhaust budget in minutes.
+           Budget enforcement is the primary safety mechanism.
+      FIX: Add budgetTracker.canContinue() check before the API call.
+           Return budget_exhausted stop reason if exceeded.
+      REF: .harness/principles.yml, docs/design-docs/escalation-boundaries.md.
+
+  - id: no-destructive-sql
+    name: No Destructive SQL Statements
+    description: >
+      Never use DROP TABLE, DROP DATABASE, TRUNCATE, or unqualified
+      DELETE FROM in SQL files. All deletes must have WHERE clauses.
+    rationale: >
+      Agents generating SQL can accidentally destroy data. The thoughts
+      table is the foundation of OB1 — catastrophic data loss from a
+      single unqualified DELETE is unrecoverable.
+    enforcement: ci
+    enforcement_detail: ob1-gate.yml scans SQL files for destructive patterns
+    severity: error
+    examples:
+      good:
+        code: "DELETE FROM agent_sessions WHERE status = 'expired' AND created_at < now() - interval '30 days';"
+        explanation: Qualified delete with WHERE clause — safe, targeted
+      bad:
+        code: "DELETE FROM agent_sessions;"
+        explanation: Unqualified delete — wipes entire table
+    violation_message: |
+      WHAT: Destructive SQL statement in {{filepath}}.
+      WHY: Unqualified deletes and drops can permanently destroy data.
+           OB1's thoughts table is the foundation — any loss is catastrophic.
+      FIX: Add a WHERE clause to scope the deletion, or use soft-delete
+           patterns (status column) instead of hard deletes.
+      REF: AGENTS.md Rule 5, CLAUDE.md Guard Rails.

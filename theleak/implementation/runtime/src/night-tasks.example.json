@@ -1,0 +1,31 @@
+[
+  {
+    "id": "task-001",
+    "title": "Build authentication module",
+    "description": "Create a Supabase Auth integration with email/password login, session management, and RLS policies for user-scoped data access.",
+    "priority": 1,
+    "agent_type": "general_purpose",
+    "max_turns": 30,
+    "max_usd": 5.00
+  },
+  {
+    "id": "task-002",
+    "title": "Write API documentation",
+    "description": "Generate OpenAPI spec for all 7 Edge Functions. Document every action, its parameters, response shapes, and error codes.",
+    "priority": 2,
+    "agent_type": "plan",
+    "depends_on": ["task-001"],
+    "max_turns": 20,
+    "max_usd": 3.00
+  },
+  {
+    "id": "task-003",
+    "title": "Integration test suite",
+    "description": "Write comprehensive integration tests that verify the authentication module works end-to-end with the Edge Functions.",
+    "priority": 2,
+    "agent_type": "verification",
+    "depends_on": ["task-001"],
+    "max_turns": 25,
+    "max_usd": 4.00
+  }
+]

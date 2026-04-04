@@ -1,0 +1,16 @@
+[package]
+name = "snowball-agent"
+version = "0.2.0"
+edition = "2021"
+description = "Knowledge extraction system for Rust codebases. Extracts patterns, generates skills, agents, and gamechangers."
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[[bin]]
+name = "snowball"
+path = "src/main.rs"
+
+[dev-dependencies]
+tempfile = "3"

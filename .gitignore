@@ -14,3 +14,15 @@ sync-log.json
 
 # Build artifacts
 deno.lock
+__pycache__/
+*.pyc
+.pytest_cache/
+.next/
+dist/
+*.egg-info/
+.venv/
+
+# IDE & local config
+.claude/plans/
+*.code-workspace
+theleak/claw-code-main/

@@ -1,0 +1,166 @@
+version: "1.0"
+
+naming:
+  files:
+    pattern: kebab-case
+    exceptions:
+      - AGENTS.md
+      - ARCHITECTURE.md
+      - README.md
+      - CLAUDE.md
+      - CONTRIBUTING.md
+      - LICENSE.md
+      - SECURITY.md
+      - CODE_OF_CONDUCT.md
+      - Dockerfile
+      - Makefile
+      - FLOWMAP.md
+      - RUNBOOK.md
+      - SYSTEM.md
+      - SKILL.md
+    violation_message: |
+      File name "{{filename}}" does not follow kebab-case convention.
+      Why: Consistent naming helps agents predict file locations without searching.
+      Fix: Rename to {{suggested_name}}.
+      See: .harness/enforcement.yml naming section.
+  types:
+    pattern: PascalCase
+    note: "TypeScript and Python domains"
+  functions:
+    pattern: camelCase
+    note: "Python domains (bacowr) use snake_case per PEP 8"
+  constants:
+    pattern: SCREAMING_SNAKE_CASE
+
+file_limits:
+  max_lines: 500
+  max_functions_per_file: 15
+  max_complexity_per_function: 10
+  exceptions:
+    - path: "theleak/implementation/runtime/conversation-runtime.ts"
+      reason: "Core agentic loop — complex by nature, single orchestration point"
+      max_lines: 800
+    - path: "theleak/implementation/sql/migrations/000_prerequisites.sql"
+      reason: "Base migration bootstrapping all prerequisites"
+      max_lines: 2500
+    - path: "projects/Bacowr-v6.3/engine.py"
+      reason: "Blueprint generation — single pipeline orchestrator"
+      max_lines: 600
+  violation_message: |
+    File "{{filepath}}" exceeds {{limit}} lines (currently {{actual}} lines).
+    Why: Large files degrade agent effectiveness — context windows fill up,
+    and agents lose track of structure.
+    Fix: Extract cohesive sections into separate modules. Check if any
+    functions can move to a shared utility.
+    See: ARCHITECTURE.md for domain/layer structure.
+
+logging:
+  style: structured
+  required_fields:
+    - level
+    - message
+    - timestamp
+  prohibited_patterns:
+    - console.log
+    - console.warn
+    - console.error
+    - print(
+  exceptions:
+    - path: "theleak/implementation/runtime/cli.ts"
+      reason: "CLI output is intentionally console-based for user interaction"
+    - path: "projects/Bacowr-v6.3/pipeline.py"
+      reason: "Pipeline progress output is user-facing"
+  violation_message: |
+    Prohibited logging pattern "{{pattern}}" found in {{filepath}}.
+    Why: Unstructured logging (console.log, print) breaks observability —
+    agents and monitoring tools cannot parse ad-hoc output.
+    Fix: Use the project's structured logger with level, message, timestamp.
+    See: .harness/principles.yml #structured-logging.
+
+imports:
+  boundary_check: true
+  max_external_deps_per_module: 10
+  banned_patterns:
+    - pattern: "../../../../"
+      reason: "Deep relative imports indicate wrong module boundary"
+    - pattern: "StdioServerTransport"
+      reason: "Local MCP servers prohibited — use Supabase Edge Functions"
+    - pattern: "claude_desktop_config"
+      reason: "Local MCP config prohibited — use Supabase connectors UI"
+    - pattern: "DROP TABLE"
+      reason: "Destructive SQL prohibited in migration files"
+    - pattern: "DROP DATABASE"
+      reason: "Destructive SQL prohibited"
+    - pattern: "TRUNCATE"
+      reason: "Destructive SQL prohibited — use qualified DELETE with WHERE"
+  violation_message: |
+    Banned pattern "{{pattern}}" found in {{filepath}}.
+    Why: {{reason}}
+    Fix: Remove the banned pattern and use the approved alternative.
+    See: AGENTS.md Non-Negotiable Rules, .harness/principles.yml.
+
+testing:
+  min_coverage_new_code: 80
+  naming_pattern_ts: "*.test.ts"
+  naming_pattern_py: "test_*.py"
+  co_located: false
+  test_dirs:
+    - theleak/implementation/runtime/tests/
+    - projects/Bacowr-v6.3/tests/
+  violation_message: |
+    New code in {{filepath}} lacks test coverage ({{actual}}% < {{limit}}%).
+    Why: Untested code is unverified code. Agents can't self-correct without tests.
+    Fix: Add tests in the appropriate test directory covering boundary behavior.
+    See: .harness/quality.yml for current coverage scores.
+
+metadata:
+  required_fields:
+    - name
+    - description
+    - category
+    - author
+  schema_path: ".github/metadata.schema.json"
+  validation: "ob1-gate.yml Rule 3"
+  violation_message: |
+    Contribution in {{dirpath}} is missing required metadata field "{{field}}".
+    Why: metadata.json is the contract between contributions and the CI gate.
+    Every contribution must be discoverable and categorizable.
+    Fix: Add the missing field to metadata.json. See .github/metadata.schema.json
+    for the full schema.
+    See: CONTRIBUTING.md for metadata requirements.
+
+pr:
+  title_format: "[category] Short description"
+  categories:
+    - extensions
+    - primitives
+    - recipes
+    - skills
+    - dashboards
+    - integrations
+    - schemas
+    - docs
+    - server
+    - .github
+  branch_convention: "contrib/<github-username>/<short-description>"
+  commit_prefix_required: true
+  violation_message: |
+    PR title "{{title}}" does not match format "[category] Short description".
+    Why: Consistent PR titles enable automated labeling, release notes, and
+    contributor tracking.
+    Fix: Rename to "[{{suggested_category}}] {{suggested_title}}".
+    See: CONTRIBUTING.md PR Standards section.
+
+sql:
+  prohibited_statements:
+    - DROP TABLE
+    - DROP DATABASE
+    - TRUNCATE
+    - "DELETE FROM"
+  qualified_delete_required: true
+  violation_message: |
+    Prohibited SQL statement "{{statement}}" in {{filepath}}.
+    Why: Destructive SQL can permanently destroy data. The thoughts table
+    is the foundation of OB1 — any data loss is catastrophic.
+    Fix: Use qualified DELETE with WHERE clause, or use soft-delete patterns.
+    See: AGENTS.md Rule 1, .harness/principles.yml #no-destructive-sql.

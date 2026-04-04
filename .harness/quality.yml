@@ -1,0 +1,119 @@
+version: "1.0"
+
+scale:
+  - A
+  - B
+  - C
+  - D
+  - F
+
+dimensions:
+  - code_quality
+  - test_coverage
+  - documentation
+  - observability
+  - reliability
+  - security
+
+review_cadence: monthly
+
+domains:
+  core-memory:
+    scores:
+      code_quality: B
+      test_coverage: D
+      documentation: A
+      observability: D
+      reliability: B
+      security: B
+    gaps:
+      - "No tests for MCP server (server/index.ts)"
+      - "No structured logging in MCP server"
+    notes: "Strong documentation, weak testing and observability"
+    last_reviewed: "2026-04-04"
+
+  curriculum:
+    scores:
+      code_quality: A
+      test_coverage: F
+      documentation: A
+      observability: N/A
+      reliability: B
+      security: B
+    gaps:
+      - "No automated SQL validation"
+      - "test_coverage N/A — documentation-only domain"
+    notes: "Curated and well-reviewed; test_coverage not applicable to documentation/SQL content"
+    last_reviewed: "2026-04-04"
+
+  community:
+    scores:
+      code_quality: B
+      test_coverage: F
+      documentation: B
+      observability: F
+      reliability: C
+      security: C
+    gaps:
+      - "No execution tests for skills"
+      - "No community contribution QA beyond metadata"
+    notes: "CI validates metadata, but no runtime testing or observability for contributions"
+    last_reviewed: "2026-04-04"
+
+  agentic-runtime:
+    scores:
+      code_quality: B
+      test_coverage: D
+      documentation: C
+      observability: C
+      reliability: B
+      security: B
+    gaps:
+      - "Tests need expansion"
+      - "Blueprints not linked from docs/"
+      - "Logging should be fully structured"
+    notes: "Well-modularized with 15 modules; budget enforcement and crash recovery solid, testing and docs need work"
+    last_reviewed: "2026-04-04"
+
+  platform-api:
+    scores:
+      code_quality: B
+      test_coverage: D
+      documentation: C
+      observability: D
+      reliability: B
+      security: B
+    gaps:
+      - "API actions need per-endpoint documentation"
+      - "No request/response logging"
+    notes: "52 actions across 7 Edge Functions; well-structured but under-documented and under-tested"
+    last_reviewed: "2026-04-04"
+
+  dashboard:
+    scores:
+      code_quality: B
+      test_coverage: F
+      documentation: D
+      observability: D
+      reliability: B
+      security: C
+    gaps:
+      - "No tests at all"
+      - "No Sentry/error tracking"
+      - "No component docs"
+    notes: "Clean Next.js 14 codebase but zero tests, no error tracking, no documentation"
+    last_reviewed: "2026-04-04"
+
+  bacowr:
+    scores:
+      code_quality: B
+      test_coverage: B
+      documentation: A
+      observability: C
+      reliability: B
+      security: B
+    gaps:
+      - "Worker needs structured logging"
+      - "No Sentry integration"
+    notes: "Best-tested domain; strong docs (CLAUDE.md, RUNBOOK.md, SYSTEM.md, SKILL.md, SAAS_PLAN.md); QA gate with 11 checks"
+    last_reviewed: "2026-04-04"

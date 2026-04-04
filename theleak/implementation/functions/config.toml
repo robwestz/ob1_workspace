@@ -1,0 +1,27 @@
+# =============================================================================
+# Supabase Edge Functions Configuration — OB1 Agentic Architecture
+#
+# All functions use x-access-key header auth (not Supabase JWT),
+# so verify_jwt is disabled for each.
+# =============================================================================
+
+[functions.agent-tools]
+verify_jwt = false
+
+[functions.agent-state]
+verify_jwt = false
+
+[functions.agent-stream]
+verify_jwt = false
+
+[functions.agent-doctor]
+verify_jwt = false
+
+[functions.agent-memory]
+verify_jwt = false
+
+[functions.agent-skills]
+verify_jwt = false
+
+[functions.agent-coordinator]
+verify_jwt = false

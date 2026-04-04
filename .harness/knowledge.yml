@@ -1,0 +1,44 @@
+version: "1.0"
+
+agents_md:
+  style: toc
+  max_lines: 100
+
+docs_structure:
+  design_docs:
+    enabled: true
+    index: true
+    core_beliefs: true
+  exec_plans:
+    enabled: true
+    sections:
+      - active
+      - completed
+      - tech_debt
+  product_specs:
+    enabled: true
+    index: true
+  references:
+    enabled: true
+  generated:
+    enabled: false
+
+guides:
+  - name: GETTING_STARTED
+    path: docs/01-getting-started.md
+    description: Full setup walkthrough — database, Edge Functions, MCP server
+  - name: COMPANION_PROMPTS
+    path: docs/02-companion-prompts.md
+    description: Five prompts for memory migration and capture habits
+  - name: FAQ
+    path: docs/03-faq.md
+    description: Troubleshooting and common questions
+  - name: AI_SETUP
+    path: docs/04-ai-assisted-setup.md
+    description: Cursor/Claude Code workflow for setup
+  - name: TOOL_AUDIT
+    path: docs/05-tool-audit.md
+    description: Detailed tool ecosystem audit
+  - name: COMMANDS
+    path: docs/COMMANDS.md
+    description: Comprehensive command reference and lathund

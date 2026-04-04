@@ -1,0 +1,221 @@
+version: "1.0"
+
+layer_order:
+  - types
+  - config
+  - repo
+  - service
+  - runtime
+  - ui
+
+dependency_rule: forward_only
+
+cross_cutting:
+  - name: auth
+    description: Supabase auth + x-access-key header validation
+    entry_point: platform-api
+  - name: persistence
+    description: Supabase PostgreSQL — all state persists remotely
+    entry_point: platform-api
+  - name: embeddings
+    description: OpenAI embeddings via pgvector for semantic search
+    entry_point: platform-api
+  - name: mcp-protocol
+    description: Model Context Protocol bridging memory to AI clients
+    entry_point: core-memory
+  - name: budget
+    description: Token/USD/turn budget tracking and enforcement
+    entry_point: agentic-runtime
+
+domains:
+  - name: core-memory
+    description: OB1's persistent memory system — Supabase schema, MCP server, setup docs
+    languages:
+      - typescript
+      - sql
+      - markdown
+    paths:
+      - server/
+      - docs/01-getting-started.md
+      - schemas/
+    layers:
+      types:
+        description: Supabase schema definitions
+        paths:
+          - schemas/
+      config:
+        description: Getting-started guide and setup configuration
+        paths:
+          - docs/01-getting-started.md
+      service:
+        description: MCP server exposing memory operations
+        paths:
+          - server/index.ts
+
+  - name: curriculum
+    description: Curated, ordered learning path of extensions and reusable concept guides
+    languages:
+      - sql
+      - markdown
+    paths:
+      - extensions/
+      - primitives/
+    layers:
+      types:
+        description: Extension and primitive metadata definitions
+        paths:
+          - extensions/*/metadata.json
+          - primitives/*/metadata.json
+      service:
+        description: SQL migrations and instructional READMEs
+        paths:
+          - extensions/
+          - primitives/
+
+  - name: community
+    description: Open community contributions — recipes, skills, dashboards, integrations
+    languages:
+      - sql
+      - markdown
+      - typescript
+      - python
+    paths:
+      - recipes/
+      - skills/
+      - dashboards/
+      - integrations/
+    layers:
+      types:
+        description: Contribution metadata definitions
+        paths:
+          - recipes/*/metadata.json
+          - skills/*/metadata.json
+          - dashboards/*/metadata.json
+          - integrations/*/metadata.json
+      service:
+        description: Implementation files varying by contribution type
+        paths:
+          - recipes/
+          - skills/
+          - dashboards/
+          - integrations/
+
+  - name: agentic-runtime
+    description: Agent execution engine — session management, budgets, coordination, CLI
+    languages:
+      - typescript
+    paths:
+      - theleak/implementation/runtime/
+    layers:
+      types:
+        description: Shared type definitions for the runtime
+        paths:
+          - theleak/implementation/runtime/src/types.ts
+      config:
+        description: Runtime configuration and defaults
+        paths:
+          - theleak/implementation/runtime/src/config.ts
+      service:
+        description: Core runtime services — session-manager, budget-tracker, tool-pool, transcript-compactor, context-assembler, coordinator
+        paths:
+          - theleak/implementation/runtime/src/session-manager.ts
+          - theleak/implementation/runtime/src/budget-tracker.ts
+          - theleak/implementation/runtime/src/tool-pool.ts
+          - theleak/implementation/runtime/src/transcript-compactor.ts
+          - theleak/implementation/runtime/src/context-assembler.ts
+          - theleak/implementation/runtime/src/coordinator.ts
+      runtime:
+        description: Executable entry points — conversation-runtime, boot, cli, night-runner, doctor, hook-runner
+        paths:
+          - theleak/implementation/runtime/src/conversation-runtime.ts
+          - theleak/implementation/runtime/src/boot.ts
+          - theleak/implementation/runtime/src/cli.ts
+          - theleak/implementation/runtime/src/night-runner.ts
+          - theleak/implementation/runtime/src/doctor.ts
+          - theleak/implementation/runtime/src/hook-runner.ts
+
+  - name: platform-api
+    description: Supabase Edge Functions and database migrations powering the platform
+    languages:
+      - typescript
+      - sql
+    paths:
+      - theleak/implementation/functions/
+      - theleak/implementation/sql/
+    layers:
+      types:
+        description: SQL schema definitions for 20 tables
+        paths:
+          - theleak/implementation/sql/
+      config:
+        description: Edge Function configuration
+        paths:
+          - theleak/implementation/functions/
+      repo:
+        description: SQL migrations and seed data
+        paths:
+          - theleak/implementation/sql/
+      service:
+        description: Edge Function handlers — 7 functions with 52 actions
+        paths:
+          - theleak/implementation/functions/
+
+  - name: dashboard
+    description: Next.js 14 GUI with Tailwind, Recharts, and Lucide icons
+    languages:
+      - typescript
+      - css
+    paths:
+      - theleak/implementation/gui/
+    layers:
+      types:
+        description: API client type definitions
+        paths:
+          - theleak/implementation/gui/src/
+      config:
+        description: Providers, environment config, Next.js settings
+        paths:
+          - theleak/implementation/gui/
+      service:
+        description: API client for communicating with platform-api
+        paths:
+          - theleak/implementation/gui/src/lib/api-client.ts
+      ui:
+        description: 12 pages in Next.js app router
+        paths:
+          - theleak/implementation/gui/src/app/
+
+  - name: bacowr
+    description: SEO article SaaS — pipeline, engine, validator, worker, and landing page
+    languages:
+      - python
+      - typescript
+      - html
+      - css
+    paths:
+      - projects/Bacowr-v6.3/
+    layers:
+      types:
+        description: Data models for articles, keywords, and pipeline state
+        paths:
+          - projects/Bacowr-v6.3/models.py
+      config:
+        description: System instructions and project configuration
+        paths:
+          - projects/Bacowr-v6.3/CLAUDE.md
+          - projects/Bacowr-v6.3/SYSTEM.md
+      service:
+        description: Core pipeline, engine, and article validator
+        paths:
+          - projects/Bacowr-v6.3/pipeline.py
+          - projects/Bacowr-v6.3/engine.py
+          - projects/Bacowr-v6.3/article_validator.py
+      runtime:
+        description: Worker process and queue processor
+        paths:
+          - projects/Bacowr-v6.3/worker/main.py
+          - projects/Bacowr-v6.3/worker/queue_processor.py
+      ui:
+        description: Landing page
+        paths:
+          - projects/Bacowr-v6.3/landing/index.html

@@ -1,0 +1,53 @@
+{
+  "name": "@ob1/runtime",
+  "version": "0.1.0",
+  "description": "OB1 agentic runtime -- local client for Supabase Edge Functions",
+  "license": "FSL-1.1-MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "ob1-agent": "dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./client": {
+      "types": "./dist/ob1-client.d.ts",
+      "import": "./dist/ob1-client.js"
+    },
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "import": "./dist/config.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "test": "node --import tsx --test tests/test-budget-tracker.ts tests/test-tool-pool.ts tests/test-context-assembler.ts tests/test-config.ts",
+    "test:all": "node --import tsx --test tests/test-*.ts",
+    "test:integration": "node --import tsx --test tests/test-migrations.ts tests/test-edge-functions.ts",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.5.0"
+  }
+}

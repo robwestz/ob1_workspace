@@ -1,3 +1,143 @@
+<h1 align="center">OB1 Workspace</h1>
+
+<p align="center">
+Agentic architecture, production systems, and commercial products — built on <a href="https://github.com/NateBJones-Projects/OB1">Open Brain</a>.
+</p>
+
+---
+
+## What This Is
+
+This workspace extends [Open Brain](https://github.com/NateBJones-Projects/OB1) (by Nate B. Jones) from a persistent AI memory system into a full **autonomous agent platform**. It adds:
+
+- **Agentic Runtime** — 15-module Node.js engine with session management, budget enforcement, multi-agent coordination, and overnight autonomous execution
+- **Platform API** — 7 Supabase Edge Functions exposing 52 actions across tools, state, streaming, memory, skills, and agent coordination
+- **Dashboard** — 12-page Next.js GUI for monitoring agents, reviewing sessions, exploring memory, and configuring night tasks
+- **Bacowr SaaS** — Commercial SEO article generation pipeline with 8-phase AI workflow, 11-point QA gate, and customer API
+- **Agent-First Harness** — Production-grade engineering scaffolding with architecture boundaries, 8 golden principles, quality scoring, and escalation boundaries
+- **Mac Deployment** — 7-wave setup workspace for running everything on a dedicated MacBook Air M2 via OpenClaw + Tailscale
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ MacBook Air M2 (dedicated agent host)                      │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ OpenClaw Gateway (:18789)                           │   │
+│  │ 25+ channels (WhatsApp, Telegram, Slack, Discord)   │   │
+│  │ MCP: snowball-knowledge, OB1 memory                 │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  ┌──────────────────┐  ┌──────────────┐  ┌──────────────┐ │
+│  │ OB1 Runtime      │  │ Dashboard    │  │ Bacowr       │ │
+│  │ Night Runner     │  │ Next.js      │  │ FastAPI      │ │
+│  │ Multi-agent DAG  │  │ :3000        │  │ :8080        │ │
+│  └────────┬─────────┘  └──────┬───────┘  └──────┬───────┘ │
+│           └──────────────┬────┴──────────────────┘         │
+│                          ▼                                  │
+│              Supabase (remote, always on)                   │
+│              ├── OB1: 20 tables + pgvector                  │
+│              ├── Bacowr: 6 tables + RLS + credits           │
+│              └── 8 Edge Functions                           │
+└─────────────────────────────────────────────────────────────┘
+         ▲ Tailscale mesh VPN
+         │
+┌────────┴────────────────┐
+│ Windows PC (daily driver)│
+│ Claude Code CLI          │
+│ GUI via Tailscale        │
+└──────────────────────────┘
+```
+
+## Repository Structure
+
+```
+├── .harness/              Agent-first engineering harness (domains, principles, quality)
+├── theleak/
+│   ├── blueprints/        8 architecture blueprints (20K lines)
+│   └── implementation/
+│       ├── runtime/       Agentic runtime (15 modules, 10.5K LOC)
+│       ├── functions/     7 Edge Functions (52 API actions)
+│       ├── sql/           20-table database schema
+│       └── gui/           Next.js dashboard (12 pages)
+├── projects/
+│   └── Bacowr-v6.3/      SEO article SaaS
+│       ├── pipeline.py    8-phase AI pipeline
+│       ├── engine.py      Blueprint generation
+│       ├── worker/        FastAPI worker + queue processor
+│       ├── landing/       bacowr.com marketing site
+│       └── supabase/      Schema + API Edge Function
+├── extensions/            6 curated learning modules (upstream)
+├── recipes/               22 community recipes (upstream)
+├── skills/                11 skill packs (upstream)
+├── docs/                  Setup guides + command reference
+│   ├── COMMANDS.md        Comprehensive lathund (13 sections)
+│   └── design-docs/       Core beliefs, process patterns, escalation boundaries
+├── AGENTS.md              Agent routing table (5 rules, verification commands)
+├── ARCHITECTURE.md        7-domain map with dependency rules
+└── CLAUDE.md              Guard rails for AI coding tools
+```
+
+## Quick Start
+
+```bash
+# 1. Deploy database + Edge Functions to Supabase
+cd theleak/implementation && ./deploy.sh
+
+# 2. Start the dashboard
+cd theleak/implementation/gui && npm install && npm run dev
+# → http://localhost:3000
+
+# 3. Start the Bacowr worker
+cd projects/Bacowr-v6.3/worker && pip install -r requirements.txt
+uvicorn main:app --port 8080
+# → http://localhost:8080/health
+
+# 4. Preview Bacowr landing page
+open projects/Bacowr-v6.3/landing/index.html
+```
+
+For full Mac deployment (OpenClaw + Tailscale + launchd services), see the [openclaw-mac-secure-home](https://github.com/robwestz) workspace.
+
+## Harness
+
+This repo uses an [agent-first engineering harness](.harness/) at Level 2.0:
+
+| Layer | Status | What It Provides |
+|-------|--------|-----------------|
+| **Map** | AGENTS.md, ARCHITECTURE.md | Where to look, 5 non-negotiable rules |
+| **Rules** | .harness/principles.yml | 8 golden principles with violation messages |
+| **Enforcement** | .harness/enforcement.yml | Naming, file limits, import rules, SQL safety |
+| **Quality** | .harness/quality.yml | 7 domains scored across 6 dimensions |
+
+See [docs/COMMANDS.md](docs/COMMANDS.md) for the full command reference.
+
+## Bacowr
+
+Bridge-Anchored Content Orchestration with Research. AI-powered backlink article generation at scale.
+
+- **Pipeline:** Preflight → SERP Research → Blueprint → Article → 11-check QA
+- **Pricing:** Trial (3 free) / Starter (99 SEK) / Pro (79 SEK) / Agency (59 SEK)
+- **Margin:** ~95% ($0.22 cost per article)
+- **API:** 8 customer-facing actions with dual-auth (API key + JWT)
+
+## Built On
+
+- [Open Brain](https://github.com/NateBJones-Projects/OB1) by Nate B. Jones — persistent AI memory system
+- [OpenClaw](https://github.com/nichochar/openclaw) — multi-channel AI orchestrator
+- [Supabase](https://supabase.com) — PostgreSQL + pgvector + Edge Functions
+- [Anthropic Claude](https://anthropic.com) — AI model provider
+
+## License
+
+[FSL-1.1-MIT](LICENSE.md) (inherited from Open Brain)
+
+---
+
+<details>
+<summary><strong>Upstream Open Brain README</strong></summary>
+
 <p align="center">
   <img src=".github/ob1-logo-wide.png" alt="Open Brain" width="600">
 </p>
@@ -162,5 +302,5 @@ Built by Nate B. Jones's team. Matt Hallett is the first community admin and rep
 ## License
 
 [FSL-1.1-MIT](LICENSE.md)
-# ob1_workspace
-# ob1_workspace
+
+</details>

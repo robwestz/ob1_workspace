@@ -1,0 +1,37 @@
+version: "1.0"
+name: "open-brain"
+created: "2026-04-04"
+updated: "2026-04-04"
+license: "FSL-1.1-MIT"
+
+tech_stack:
+  languages:
+    - typescript
+    - python
+    - sql
+    - markdown
+  frameworks:
+    - next.js
+    - fastapi
+    - deno
+    - supabase
+  build:
+    - tsc
+    - next-build
+    - pip
+    - deno
+  test:
+    - node-test
+    - pytest
+    - next-build
+  deploy:
+    - supabase-edge-functions
+    - docker
+    - launchd
+
+harness_components:
+  - knowledge
+  - architecture
+  - enforcement
+  - quality
+  - process
