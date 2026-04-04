@@ -34,7 +34,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "test": "node --import tsx --test tests/test-budget-tracker.ts tests/test-tool-pool.ts tests/test-context-assembler.ts tests/test-config.ts",
+    "test": "node --import tsx --test tests/test-budget-tracker.ts tests/test-tool-pool.ts tests/test-context-assembler.ts tests/test-config.ts tests/test-types.ts",
     "test:all": "node --import tsx --test tests/test-*.ts",
     "test:integration": "node --import tsx --test tests/test-migrations.ts tests/test-edge-functions.ts",
     "prepublishOnly": "npm run clean && npm run build"

@@ -1,0 +1,49 @@
+[
+  {
+    "id": "doc-gardening",
+    "title": "Documentation Gardening",
+    "description": "Verify all file paths referenced in AGENTS.md and ARCHITECTURE.md actually exist on disk. Check cross-links between docs/ files. Update any stale references to renamed or moved files. Report broken links and fix what you can.",
+    "priority": 3,
+    "agent_type": "explore",
+    "max_turns": 30,
+    "max_usd": 2.00
+  },
+  {
+    "id": "gc-sweep",
+    "title": "Garbage Collection Sweep",
+    "description": "Scan the codebase for dead code, duplicated helper functions, unused imports, and pattern drift against .harness/principles.yml. Report findings with file paths and line numbers. Do not modify files -- report only.",
+    "priority": 4,
+    "agent_type": "explore",
+    "max_turns": 40,
+    "max_usd": 3.00
+  },
+  {
+    "id": "migration-verify",
+    "title": "Migration Integrity Check",
+    "description": "Read all SQL migration files in theleak/implementation/sql/migrations/ and verify: correct ordering, no destructive statements (DROP TABLE, TRUNCATE, unqualified DELETE), all CREATE TABLE use IF NOT EXISTS, RLS enabled on all tables, trigger functions exist. Compare Edge Function code against migration schemas to find column mismatches. Report findings.",
+    "priority": 2,
+    "agent_type": "verification",
+    "depends_on": [],
+    "max_turns": 30,
+    "max_usd": 2.00
+  },
+  {
+    "id": "edge-fn-smoke",
+    "title": "Edge Function Health Check",
+    "description": "Call each of the 7 Edge Functions (agent-tools, agent-state, agent-stream, agent-doctor, agent-memory, agent-skills, agent-coordinator) with a basic action and verify they return HTTP 200. Log response times and any errors. This is a read-only check -- do not create or modify any data.",
+    "priority": 1,
+    "agent_type": "verification",
+    "max_turns": 20,
+    "max_usd": 1.00
+  },
+  {
+    "id": "morning-report",
+    "title": "Morning Report Generation",
+    "description": "Compile the overnight activity summary: which tasks completed, which failed, total budget used, key findings from each task, and any errors encountered. Format as a clean markdown report suitable for reading with morning coffee. Store as an OB1 thought tagged with 'morning-report'.",
+    "priority": 0,
+    "agent_type": "general_purpose",
+    "depends_on": ["doc-gardening", "gc-sweep", "migration-verify", "edge-fn-smoke"],
+    "max_turns": 15,
+    "max_usd": 1.00
+  }
+]

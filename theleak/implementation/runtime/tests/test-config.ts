@@ -184,6 +184,47 @@ describe('ScopedConfigLoader', () => {
     assert.equal(colorProv.value, 'blue');
   });
 
+  it('provenance uses dot-separated keys for nested values', async () => {
+    await writeJson(join(testDir, 'user', 'config.json'), {
+      budget: {
+        max_turns: 50,
+      },
+    });
+    await writeJson(join(testDir, 'project', 'config.json'), {
+      budget: {
+        max_turns: 20,
+      },
+    });
+
+    const loader = buildLoader();
+    const result = await loader.load();
+
+    const prov = result.provenance['budget.max_turns'];
+    assert.ok(prov, 'provenance for "budget.max_turns" should exist');
+    assert.equal(prov.scope, 'project');
+    assert.equal(prov.value, 20);
+  });
+
+  it('provenance records overridden_by when a value is overridden', async () => {
+    await writeJson(join(testDir, 'user', 'config.json'), {
+      model: 'sonnet',
+    });
+    await writeJson(join(testDir, 'project', 'config.json'), {
+      model: 'haiku',
+    });
+
+    const loader = buildLoader();
+    const result = await loader.load();
+
+    // The user-scope provenance entry should have been updated with overridden_by
+    // But the final provenance['model'] is the project entry
+    const modelProv = result.provenance['model'];
+    assert.equal(modelProv.scope, 'project');
+    assert.equal(modelProv.value, 'haiku');
+    // The file path should point to the project config
+    assert.ok(modelProv.file.includes('project'));
+  });
+
   // ---- MCP server deduplication -------------------------------------
 
   it('MCP servers are deduplicated by name (last scope wins)', async () => {
@@ -229,6 +270,25 @@ describe('ScopedConfigLoader', () => {
     assert.equal(github.scope, 'user');
   });
 
+  it('MCP servers also work with snake_case key mcp_servers', async () => {
+    await writeJson(join(testDir, 'user', 'config.json'), {
+      mcp_servers: {
+        myserver: {
+          url: 'https://my.server.com/mcp',
+        },
+      },
+    });
+
+    const loader = buildLoader();
+    const result = await loader.load();
+
+    assert.equal(result.mcpServers.length, 1);
+    const server = result.mcpServers[0];
+    assert.equal(server.name, 'myserver');
+    assert.equal(server.url, 'https://my.server.com/mcp');
+    assert.equal(server.scope, 'user');
+  });
+
   // ---- Missing files are non-fatal ----------------------------------
 
   it('handles missing config files gracefully', async () => {
@@ -257,5 +317,89 @@ describe('ScopedConfigLoader', () => {
 
     assert.ok(result.validationErrors.length >= 1);
     assert.ok(result.validationErrors[0].includes('[user]'));
+  });
+
+  // ---- Sources array -------------------------------------------------
+
+  it('populates sources array with all discovered paths', async () => {
+    await writeJson(join(testDir, 'user', 'config.json'), { a: 1 });
+    // project and local not written
+
+    const loader = buildLoader();
+    const result = await loader.load();
+
+    assert.equal(result.sources.length, 3);
+
+    const userSource = result.sources.find(s => s.scope === 'user');
+    assert.ok(userSource);
+    assert.equal(userSource.exists, true);
+    assert.equal(userSource.loaded, true);
+
+    const projectSource = result.sources.find(s => s.scope === 'project');
+    assert.ok(projectSource);
+    assert.equal(projectSource.exists, false);
+    assert.equal(projectSource.loaded, false);
+  });
+
+  // ---- Arrays are replaced, not merged --------------------------------
+
+  it('arrays are replaced (not merged) by higher scopes', async () => {
+    await writeJson(join(testDir, 'user', 'config.json'), {
+      tags: ['a', 'b', 'c'],
+    });
+    await writeJson(join(testDir, 'project', 'config.json'), {
+      tags: ['x'],
+    });
+
+    const loader = buildLoader();
+    const result = await loader.load();
+
+    assert.deepEqual(result.config.tags, ['x']);
+  });
+
+  // ---- mcpServers key is excluded from merged config -----------------
+
+  it('mcpServers key is excluded from the merged config (handled separately)', async () => {
+    await writeJson(join(testDir, 'user', 'config.json'), {
+      model: 'sonnet',
+      mcpServers: {
+        supabase: { url: 'https://example.com' },
+      },
+    });
+
+    const loader = buildLoader();
+    const result = await loader.load();
+
+    assert.equal(result.config.model, 'sonnet');
+    assert.equal(result.config.mcpServers, undefined);
+    // MCP servers are in the dedicated mcpServers array
+    assert.equal(result.mcpServers.length, 1);
+  });
+
+  // ---- Partial config files ------------------------------------------
+
+  it('handles partial overlap across all 3 tiers', async () => {
+    await writeJson(join(testDir, 'user', 'config.json'), {
+      a: 'user_a',
+      b: 'user_b',
+      c: 'user_c',
+    });
+    await writeJson(join(testDir, 'project', 'config.json'), {
+      b: 'project_b',
+      d: 'project_d',
+    });
+    await writeJson(join(testDir, 'local', 'config.local.json'), {
+      c: 'local_c',
+      e: 'local_e',
+    });
+
+    const loader = buildLoader();
+    const result = await loader.load();
+
+    assert.equal(result.config.a, 'user_a');
+    assert.equal(result.config.b, 'project_b');
+    assert.equal(result.config.c, 'local_c');
+    assert.equal(result.config.d, 'project_d');
+    assert.equal(result.config.e, 'local_e');
   });
 });
