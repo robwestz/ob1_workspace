@@ -1,0 +1,66 @@
+---
+framework:
+  name: "structured-upgrade"
+  version: "1.0"
+  purpose: "Systematic upgrade framework for BACOWR v6.2 article generation pipeline"
+
+gate_registry: "gates.md"
+
+sot_files:
+  - path: "structured-upgrade/system_truth.md"
+    role: "Authoritative system description"
+  - path: "structured-upgrade/contracts.md"
+    role: "Module boundary contracts"
+  - path: "structured-upgrade/gates.md"
+    role: "Stop-rule definitions"
+  - path: "structured-upgrade/state.md"
+    role: "Iteration log and session memory"
+  - path: "structured-upgrade/bootstrap.md"
+    role: "Startup protocol"
+  - path: "structured-upgrade/system_protocol.md"
+    role: "Agent operating rules"
+  - path: "structured-upgrade/manifest.yaml"
+    role: "This file — framework configuration"
+
+project_files:
+  core_python:
+    - path: "models.py"
+      role: "Data structures (JobSpec, Preflight, PublisherProfile, TargetFingerprint, SemanticBridge, etc.)"
+      lines: 275
+    - path: "pipeline.py"
+      role: "Semantic orchestrator (CSV load, publisher profiling, target analysis, semantic bridge, preflight)"
+      lines: 966
+    - path: "engine.py"
+      role: "SERP intelligence engine (TargetIntentAnalyzer, TopicDiscovery, BridgeGravity, ThesisForge, Blueprint)"
+      lines: 2800
+    - path: "article_validator.py"
+      role: "11-check QA validation (word count, anchor, trustlinks, style, language, paragraphs)"
+
+  documentation:
+    - path: "SKILL.md"
+      role: "Hard constraints (HC-1 to HC-9), 8-phase pipeline, file roles — MASTER orchestration"
+    - path: "INIT.md"
+      role: "Session bootstrap, crash recovery, quick-start code"
+    - path: "CLAUDE.md"
+      role: "Agent instructions, commands, batch mode, file paths"
+    - path: "SYSTEM.md"
+      role: "Article rules (word count, anchor, trustlinks, style, forbidden phrases)"
+    - path: "FLOWMAP.md"
+      role: "Swimlane execution flow, phase-by-phase data flow"
+    - path: "qa-template.md"
+      role: "QA script specification (11 binary checks)"
+    - path: "RUNBOOK.md"
+      role: "Zero-context agent step-by-step execution guide"
+
+  job_data:
+    - path: "textjobs_list.csv"
+
+excluded_patterns:
+  - "node_modules/"
+  - ".env*"
+  - "dist/"
+  - "__pycache__/"
+  - ".git/"
+  - ".cache/"
+  - "*.backup.*"
+  - "*.latest"

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.cache/
+.pytest_cache/
+.claude/
+text-output/
+articles/
+preflight/
+prompts/
+*.backup.*
+*.latest

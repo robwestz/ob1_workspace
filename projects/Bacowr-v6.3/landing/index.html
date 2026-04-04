@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bacowr — Bulk SEO Articles That Actually Rank</title>
+  <meta name="description" content="AI-powered backlink content with SERP research, semantic bridge analysis, and 11-point QA — at scale. Upload a CSV, download QA-verified articles.">
+  <meta name="theme-color" content="#0a0a0f">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Bacowr — Bulk SEO Articles That Actually Rank">
+  <meta property="og:description" content="AI-powered backlink content with SERP research, semantic bridge analysis, and 11-point QA — at scale.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bacowr.com">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Favicon (inline SVG) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%233b82f6'/><text x='50' y='68' font-size='52' font-weight='800' text-anchor='middle' fill='white' font-family='system-ui'>B</text></svg>">
+</head>
+<body>
+
+  <!-- ============================================================= -->
+  <!-- NAVIGATION                                                      -->
+  <!-- ============================================================= -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">B</span>
+        bacowr
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#pipeline">Pipeline</a></li>
+        <li><a href="#quality">Quality</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#start" class="nav-cta">Start Free Trial</a></li>
+      </ul>
+      <button class="mobile-toggle" id="mobile-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ============================================================= -->
+  <!-- HERO                                                            -->
+  <!-- ============================================================= -->
+  <section class="hero" id="hero">
+    <div class="hero-visual">
+      <canvas id="pipeline-canvas"></canvas>
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <span class="section-label">Bridge-Anchored Content Orchestration</span>
+        <h1>Bulk SEO Articles<br>That <span class="accent">Actually Rank</span></h1>
+        <p class="hero-subtitle">
+          AI-powered backlink content with SERP research, semantic bridge analysis, and 11-point QA&nbsp;&mdash;&nbsp;at&nbsp;scale.
+        </p>
+        <div class="hero-actions">
+          <a href="#start" class="btn btn-primary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Start Free Trial &mdash; 3 Articles
+          </a>
+          <a href="#pricing" class="btn btn-secondary btn-lg">See Pricing</a>
+        </div>
+        <p class="hero-note">No credit card required. Full QA on every article.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- STATS BAR                                                       -->
+  <!-- ============================================================= -->
+  <div class="stats-bar">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">8<span class="accent">-</span>Phase</div>
+          <div class="stat-label">AI Pipeline</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">5</div>
+          <div class="stat-label">SERP Research Probes</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">11</div>
+          <div class="stat-label">QA Checks per Article</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">750<span class="accent">-</span>900</div>
+          <div class="stat-label">Words per Article</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- HOW IT WORKS                                                    -->
+  <!-- ============================================================= -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container text-center">
+      <span class="section-label">How It Works</span>
+      <h2>Three steps. Hundreds of articles.</h2>
+      <p class="section-subtitle">
+        Upload your link-building jobs. We handle research, writing, and verification.
+      </p>
+
+      <div class="steps-grid animate-in">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <h3>Upload Your CSV</h3>
+          <p>
+            Provide a spreadsheet of jobs &mdash; each row is a publisher domain, target URL, and anchor text.
+            That's all we need.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <h3>AI Researches &amp; Writes</h3>
+          <p>
+            Our 8-phase pipeline profiles the publisher, fingerprints your target page, runs SERP research,
+            builds a semantic bridge, and writes the article.
+          </p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <h3>Download Verified Articles</h3>
+          <p>
+            Every article passes an automated 11-check QA gate before delivery. Word count, anchor placement,
+            trust links, editorial flow &mdash; all verified.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- THE PIPELINE                                                    -->
+  <!-- ============================================================= -->
+  <section class="pipeline-section" id="pipeline">
+    <div class="container text-center">
+      <span class="section-label">The Pipeline</span>
+      <h2>Eight phases of intelligence<br>behind every article</h2>
+      <p class="section-subtitle">
+        Not just AI-generated text &mdash; researched, structured, verified. Each article is reverse-engineered
+        from Google's understanding of your target page.
+      </p>
+
+      <div class="pipeline-visual">
+        <div class="pipeline-track">
+          <div class="phase-node">
+            <div class="phase-dot research">0</div>
+            <div class="phase-name">Session Init</div>
+            <div class="phase-desc">Load modules, configure rules</div>
+          </div>
+          <div class="phase-node">
+            <div class="phase-dot research">1</div>
+            <div class="phase-name">Job Loading</div>
+            <div class="phase-desc">Parse CSV into job specs</div>
+          </div>
+          <div class="phase-node">
+            <div class="phase-dot analysis">2</div>
+            <div class="phase-name">Preflight</div>
+            <div class="phase-desc">Publisher profile, target fingerprint, semantic bridge</div>
+          </div>
+          <div class="phase-node">
+            <div class="phase-dot analysis">3</div>
+            <div class="phase-name">Metadata</div>
+            <div class="phase-desc">Fetch real target page title &amp; meta</div>
+          </div>
+          <div class="phase-node">
+            <div class="phase-dot research">4</div>
+            <div class="phase-name">Probe Gen</div>
+            <div class="phase-desc">Create 5 SERP research queries</div>
+          </div>
+          <div class="phase-node">
+            <div class="phase-dot research">5</div>
+            <div class="phase-name">SERP Exec</div>
+            <div class="phase-desc">Run probes, discover trust links</div>
+          </div>
+          <div class="phase-node">
+            <div class="phase-dot build">6</div>
+            <div class="phase-name">Blueprint</div>
+            <div class="phase-desc">Topic, thesis, section plan, constraints</div>
+          </div>
+          <div class="phase-node">
+            <div class="phase-dot build">7</div>
+            <div class="phase-name">Article</div>
+            <div class="phase-desc">Write following blueprint + editorial rules</div>
+          </div>
+          <div class="phase-node">
+            <div class="phase-dot verify">8</div>
+            <div class="phase-name">QA Gate</div>
+            <div class="phase-desc">11 binary checks &mdash; all must pass</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipeline-callout">
+        <strong>The only backlink content service that reverse-engineers Google's understanding of your target page before writing a single word.</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- QUALITY GUARANTEE                                               -->
+  <!-- ============================================================= -->
+  <section class="quality-section" id="quality">
+    <div class="container">
+      <div class="text-center">
+        <span class="section-label">Quality Guarantee</span>
+        <h2>11 checks. Zero compromises.</h2>
+        <p class="section-subtitle">
+          Every article passes a binary QA gate before delivery. If any check fails, the article gets revised &mdash; not shipped.
+        </p>
+      </div>
+
+      <div class="qa-grid animate-in">
+        <div class="qa-checks">
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>Word Count</strong> &mdash; 750&ndash;900 words, every time</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>Anchor Present</strong> &mdash; Your exact link text, verified</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>Anchor Count</strong> &mdash; Exactly 1 occurrence, no over-optimization</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>Anchor Position</strong> &mdash; Placed at word 250&ndash;550, mid-article</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>Trust Links</strong> &mdash; 1&ndash;2 verified third-party sources</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>No Bullets/Lists</strong> &mdash; Flowing editorial prose only</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>Heading Structure</strong> &mdash; Maximum 1 heading (title only)</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>AI-Smell Detection</strong> &mdash; Zero forbidden AI phrases</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>Language Match</strong> &mdash; Correct language for target domain</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>SERP Entities</strong> &mdash; Min. 4 domain-specific entities woven in</span>
+          </div>
+          <div class="qa-check">
+            <span class="qa-check-icon">&#10003;</span>
+            <span class="qa-check-text"><strong>Paragraph Depth</strong> &mdash; Min. 4 substantive paragraphs</span>
+          </div>
+        </div>
+
+        <div class="qa-summary">
+          <div class="qa-summary-score">11/11</div>
+          <div class="qa-summary-label">checks must pass before delivery</div>
+          <p>
+            Our QA gate isn't a suggestion &mdash; it's a hard stop. Articles that fail
+            <span class="highlight">any single check</span> are automatically flagged for revision.
+            You only receive content that meets every criterion.
+          </p>
+          <br>
+          <p>
+            This means <span class="highlight">no filler content</span>, no AI-sounding phrases,
+            no misplaced anchors. Every article reads like it was written by a domain expert
+            who understands both the publisher and your target page.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- COMPARISON                                                      -->
+  <!-- ============================================================= -->
+  <section class="pipeline-section" id="comparison">
+    <div class="container text-center">
+      <span class="section-label">Why Bacowr</span>
+      <h2>Not your typical AI writer</h2>
+      <p class="section-subtitle">
+        See how Bacowr compares to generic AI content tools.
+      </p>
+
+      <div class="comparison-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Generic AI Tools</th>
+              <th>Bacowr</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Publisher-aware content</td>
+              <td class="cross">&times;</td>
+              <td class="check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>SERP research before writing</td>
+              <td class="cross">&times;</td>
+              <td class="check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Semantic bridge analysis</td>
+              <td class="cross">&times;</td>
+              <td class="check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Controlled anchor placement</td>
+              <td class="cross">&times;</td>
+              <td class="check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Trust link discovery</td>
+              <td class="cross">&times;</td>
+              <td class="check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>AI-smell detection &amp; removal</td>
+              <td class="cross">&times;</td>
+              <td class="check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Automated QA gate</td>
+              <td class="cross">&times;</td>
+              <td class="check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Bulk CSV processing</td>
+              <td class="cross">&times;</td>
+              <td class="check">&#10003;</td>
+            </tr>
+            <tr>
+              <td>Per-article strategy adaptation</td>
+              <td class="cross">&times;</td>
+              <td class="check">&#10003;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- PRICING                                                         -->
+  <!-- ============================================================= -->
+  <section class="pricing-section" id="pricing">
+    <div class="container text-center">
+      <span class="section-label">Pricing</span>
+      <h2>Simple per-article pricing</h2>
+      <p class="section-subtitle">
+        No subscriptions. Buy article packs, use them when you need them. Volume discounts for agencies.
+      </p>
+
+      <div class="pricing-grid animate-in">
+
+        <!-- Trial -->
+        <div class="price-card">
+          <div class="price-tier">Trial</div>
+          <div class="price-amount">Free</div>
+          <div class="price-usd">3 articles, no credit card</div>
+          <ul class="price-features">
+            <li>3 free articles (lifetime)</li>
+            <li>Full 8-phase pipeline</li>
+            <li>Full 11-check QA</li>
+            <li>Email delivery</li>
+            <li>Watermark on articles</li>
+          </ul>
+          <a href="#start" class="btn btn-outline btn-sm">Start Free</a>
+        </div>
+
+        <!-- Starter -->
+        <div class="price-card">
+          <div class="price-tier">Starter</div>
+          <div class="price-amount"><span class="currency">SEK</span>99<span class="period">/article</span></div>
+          <div class="price-usd">~$9 USD &middot; pay-as-you-go</div>
+          <ul class="price-features">
+            <li>Pay-as-you-go pricing</li>
+            <li>Up to 50 articles/month</li>
+            <li>Full 8-phase pipeline</li>
+            <li>Full 11-check QA</li>
+            <li>Single CSV upload</li>
+            <li>Email delivery</li>
+          </ul>
+          <a href="#start" class="btn btn-outline btn-sm">Get Started</a>
+        </div>
+
+        <!-- Pro -->
+        <div class="price-card featured">
+          <div class="price-tier">Pro</div>
+          <div class="price-amount"><span class="currency">SEK</span>79<span class="period">/article</span></div>
+          <div class="price-usd">~$7.50 USD &middot; 100-article packs</div>
+          <ul class="price-features">
+            <li>100-article packs</li>
+            <li>Up to 500 articles/month</li>
+            <li>Priority processing queue</li>
+            <li>Dashboard access</li>
+            <li>Bulk CSV upload</li>
+            <li>API access</li>
+          </ul>
+          <a href="#start" class="btn btn-primary btn-sm">Start with Pro</a>
+        </div>
+
+        <!-- Agency -->
+        <div class="price-card">
+          <div class="price-tier">Agency</div>
+          <div class="price-amount"><span class="currency">SEK</span>59<span class="period">/article</span></div>
+          <div class="price-usd">~$5.50 USD &middot; 500-article packs</div>
+          <ul class="price-features">
+            <li>500-article packs</li>
+            <li>Up to 2,000 articles/month</li>
+            <li>Dedicated processing queue</li>
+            <li>White-label option</li>
+            <li>Webhook delivery</li>
+            <li>Custom trust-link rules</li>
+            <li>API access</li>
+          </ul>
+          <a href="#start" class="btn btn-outline btn-sm">Contact Sales</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- FAQ                                                             -->
+  <!-- ============================================================= -->
+  <section class="faq-section" id="faq">
+    <div class="container text-center">
+      <span class="section-label">FAQ</span>
+      <h2>Frequently asked questions</h2>
+    </div>
+    <div class="container">
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-question">
+            What makes Bacowr different from ChatGPT or Jasper?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              ChatGPT and Jasper are general-purpose writers. They produce text based on a prompt, but they don't understand your link-building strategy. Bacowr is purpose-built for backlink content: it profiles the publisher, fingerprints your target page, calculates the semantic distance between them, runs 5 SERP research queries to understand what Google knows about your topic, discovers trust links, and then builds a structured blueprint before writing a single word. Every article passes an 11-check automated QA gate. The result is content that reads naturally in the publisher's context while strategically placing your anchor link.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            How long does it take to process my articles?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Each article takes approximately 60&ndash;90 seconds to process through the full 8-phase pipeline, including SERP research. A batch of 100 articles typically completes in 2&ndash;3 hours. Pro and Agency tiers get priority/dedicated processing queues for faster throughput. You can track progress in real time on your dashboard.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            What about duplicate content across articles?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Every article is generated from a unique blueprint built from the specific publisher-target pair. The semantic bridge calculation, SERP research results, and publisher profile are different for each job, so the content naturally varies. Even if two jobs share the same target URL, different publishers produce different articles because the bridge strategy adapts to each publisher's domain and topic context. Our QA gate also checks for forbidden AI patterns that tend to create templated-sounding content.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Can I use my own publisher list?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Yes &mdash; that's exactly how Bacowr works. You provide a CSV with your publisher domains, target URLs, and anchor text. We don't supply publishers; we write content optimized for the publishers you've already secured placements with. This means you maintain full control over your link-building strategy while we handle the content production at scale.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            What languages are supported?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Bacowr currently supports Swedish and English. The language is automatically detected based on the publisher domain &mdash; .se and .nu domains get Swedish articles, while .com and .co.uk domains get English. The QA gate verifies correct language matching for every article.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            What if an article fails QA?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">
+              Articles that fail any of the 11 QA checks are automatically flagged for revision. The pipeline identifies exactly which checks failed and regenerates the article. You only receive articles that pass all 11 checks. Failed articles do not count against your article balance.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- CTA BANNER                                                      -->
+  <!-- ============================================================= -->
+  <section class="cta-banner" id="start">
+    <div class="container">
+      <h2>Ready to scale your link building?</h2>
+      <p>Start with 3 free articles. No credit card required.</p>
+      <a href="#" class="btn btn-primary btn-lg">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        Start Your Free Trial
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================= -->
+  <!-- FOOTER                                                          -->
+  <!-- ============================================================= -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">bacowr.com</div>
+        <ul class="footer-links">
+          <li><a href="mailto:hello@bacowr.com">Contact</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Privacy</a></li>
+        </ul>
+        <div class="footer-copy">&copy; 2026 Bacowr. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================= -->
+  <!-- SCRIPTS                                                         -->
+  <!-- ============================================================= -->
+  <script>
+    // ---------------------------------------------------------------
+    // Mobile menu toggle
+    // ---------------------------------------------------------------
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const navLinks = document.getElementById('nav-links');
+    mobileToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+    // Close menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // ---------------------------------------------------------------
+    // Scroll animations (Intersection Observer)
+    // ---------------------------------------------------------------
+    const animateElements = document.querySelectorAll('.animate-in');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    animateElements.forEach(el => observer.observe(el));
+
+    // ---------------------------------------------------------------
+    // FAQ accordion
+    // ---------------------------------------------------------------
+    document.querySelectorAll('.faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = button.parentElement;
+        const wasActive = item.classList.contains('active');
+        // Close all
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+        // Toggle current
+        if (!wasActive) item.classList.add('active');
+      });
+    });
+
+    // ---------------------------------------------------------------
+    // Smooth scroll for anchor links
+    // ---------------------------------------------------------------
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          const offset = 80; // nav height
+          const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // ---------------------------------------------------------------
+    // Pipeline animation (canvas)
+    // ---------------------------------------------------------------
+    (function() {
+      const canvas = document.getElementById('pipeline-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w, h, particles, connections;
+      const PARTICLE_COUNT = 60;
+      const CONNECTION_DIST = 150;
+      const ACCENT = { r: 59, g: 130, b: 246 };
+
+      function resize() {
+        w = canvas.width = canvas.parentElement.clientWidth;
+        h = canvas.height = canvas.parentElement.clientHeight;
+      }
+
+      function init() {
+        resize();
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          particles.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: (Math.random() - 0.5) * 0.4,
+            r: Math.random() * 2 + 1,
+            pulse: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+
+        // Connections
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < CONNECTION_DIST) {
+              const alpha = (1 - dist / CONNECTION_DIST) * 0.15;
+              ctx.strokeStyle = `rgba(${ACCENT.r}, ${ACCENT.g}, ${ACCENT.b}, ${alpha})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Particles
+        for (const p of particles) {
+          p.pulse += 0.02;
+          const pulseAlpha = 0.3 + Math.sin(p.pulse) * 0.2;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${ACCENT.r}, ${ACCENT.g}, ${ACCENT.b}, ${pulseAlpha})`;
+          ctx.fill();
+
+          // Move
+          p.x += p.vx;
+          p.y += p.vy;
+
+          // Wrap
+          if (p.x < -10) p.x = w + 10;
+          if (p.x > w + 10) p.x = -10;
+          if (p.y < -10) p.y = h + 10;
+          if (p.y > h + 10) p.y = -10;
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      init();
+      draw();
+      window.addEventListener('resize', () => { resize(); });
+    })();
+
+    // ---------------------------------------------------------------
+    // Nav scroll effect (subtle)
+    // ---------------------------------------------------------------
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('nav');
+      const scrollY = window.pageYOffset;
+      if (scrollY > 50) {
+        nav.style.borderBottomColor = 'rgba(255,255,255,0.08)';
+      } else {
+        nav.style.borderBottomColor = 'rgba(255,255,255,0.06)';
+      }
+      lastScroll = scrollY;
+    });
+  </script>
+
+</body>
+</html>

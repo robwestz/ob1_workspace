@@ -1,0 +1,7 @@
+fastapi>=0.104
+uvicorn>=0.24
+anthropic>=0.42
+supabase>=2.0
+python-dotenv>=1.0
+aiohttp>=3.9
+beautifulsoup4>=4.12

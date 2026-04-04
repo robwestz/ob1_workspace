@@ -1,0 +1,8 @@
+# BACOWR v6.2 — Dependencies
+# Core (always required)
+pytest>=7.0
+
+# Optional — pipeline degrades gracefully without these
+aiohttp>=3.9
+beautifulsoup4>=4.12
+sentence-transformers>=2.2
