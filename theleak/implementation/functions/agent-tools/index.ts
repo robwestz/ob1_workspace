@@ -544,6 +544,7 @@ Deno.serve(async (req: Request) => {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[agent-tools] action=${action} error:`, message);
-    return json({ error: message }, 500);
+    // SECURITY: Do not leak internal error details to the client
+    return json({ error: "Internal server error" }, 500);
   }
 });

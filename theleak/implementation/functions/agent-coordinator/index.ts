@@ -382,8 +382,9 @@ async function handleListAgentRuns(
   supabase: SupabaseClient,
   params: Record<string, unknown>,
 ): Promise<Response> {
-  const limit = (params.limit as number) ?? 50;
-  const offset = (params.offset as number) ?? 0;
+  // SECURITY: Cap limit to prevent unbounded result sets
+  const limit = Math.min((params.limit as number) ?? 50, 200);
+  const offset = Math.max((params.offset as number) ?? 0, 0);
 
   let query = supabase
     .from("agent_runs")
@@ -535,7 +536,8 @@ async function handleGetMessages(
   }
 
   const undeliveredOnly = params.undelivered_only !== false;
-  const limit = (params.limit as number) ?? 50;
+  // SECURITY: Cap limit to prevent unbounded result sets
+  const limit = Math.min((params.limit as number) ?? 50, 500);
 
   // Resolve run_id strings to UUIDs
   const { data: coordRun } = await supabase
@@ -596,6 +598,11 @@ async function handleMarkDelivered(
 
   if (!messageIds || messageIds.length === 0) {
     return jsonError("Missing required field: message_ids (non-empty array)");
+  }
+
+  // SECURITY: Cap array size to prevent oversized IN() queries
+  if (messageIds.length > 500) {
+    return jsonError("Maximum 500 message IDs per request");
   }
 
   const { error, count } = await supabase

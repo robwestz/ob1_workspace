@@ -161,6 +161,25 @@ export class TranscriptCompactor {
       return false;
     }
 
+    // Guard 2b: Budget check before LLM call — compaction itself burns tokens,
+    // so we must not call the LLM if the budget is already exhausted.
+    // [HARDENING] Added missing budget check before compaction LLM call.
+    const budgetStatus = await budget.checkBudget(session.sessionId);
+    if (!budgetStatus.can_proceed) {
+      await this.client.logEvent({
+        category: 'compaction',
+        title: 'compaction_skipped_budget_exhausted',
+        severity: 'warn',
+        session_id: session.sessionId,
+        detail: {
+          stop_reason: budgetStatus.stop_reason,
+          tokens_used: budgetStatus.tokens_used,
+          usd_used: budgetStatus.usd_used,
+        },
+      }).catch(() => {});
+      return false;
+    }
+
     // Guard 3: Minimum turn count
     if (budget.turnsUsed < this.config.min_turns_before_compact) {
       return false;

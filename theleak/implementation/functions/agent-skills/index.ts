@@ -77,9 +77,15 @@ async function handleListSkills(
   }
 
   if (params.search) {
-    query = query.or(
-      `name.ilike.%${params.search}%,description.ilike.%${params.search}%`,
-    );
+    // SECURITY: Sanitize search input — escape PostgREST filter metacharacters
+    // to prevent filter injection via crafted search strings.
+    const raw = String(params.search).slice(0, 200); // cap length
+    const safe = raw.replace(/[%_\\,.()"']/g, ""); // strip wildcards and filter syntax
+    if (safe.length > 0) {
+      query = query.or(
+        `name.ilike.%${safe}%,description.ilike.%${safe}%`,
+      );
+    }
   }
 
   const { data, error } = await query.order("name");
@@ -555,7 +561,8 @@ async function handleGetHookLog(
     return jsonError("Missing required field: session_id");
   }
 
-  const limit = (params.limit as number) ?? 50;
+  // SECURITY: Cap limit to prevent unbounded result sets
+  const limit = Math.min((params.limit as number) ?? 50, 500);
 
   let query = supabase
     .from("hook_execution_log")

@@ -125,3 +125,64 @@ Generated: 2026-04-05 | Source: Ahrefs API
 **Bacowr is 50-300x cheaper and 100-1000x faster.**
 
 The margin risk is near zero — $0.22 cost per article means even the lowest tier (99 SEK for 50 articles = 1.98 SEK/article) has 89% margin.
+
+## Publisher Network (Current Customers)
+
+Domain ratings of publishers in the current Bacowr job list:
+
+| Publisher | DR | Ahrefs Rank | Category |
+|-----------|-----|-------------|----------|
+| bulletin.nu | 53 | 509K | News |
+| fragbite.se | 51 | 629K | Gaming/Esport |
+| duochjobbet.se | 42 | 1.3M | Career |
+| omkrets.se | 36 | 2.2M | Business |
+| formexmagazine.se | 32 | 3.1M | Design |
+| bettingsyndikatet.se | 29 | 4.1M | Betting |
+| skarp.se | 24 | 6.5M | Tech |
+
+**Insight:** DR range 24-53 is the sweet spot for backlink articles — high enough to pass link equity, low enough to accept external content. The publisher network covers multiple verticals (gaming, news, business, design, career), which means diverse linking opportunities.
+
+**Recommendation:** Focus sales outreach on DR 30-60 Swedish publishers across these verticals. Each new publisher added to the network multiplies the value for all customers.
+
+## Target Domains (Advertiser Clients)
+
+The domains that Bacowr articles link TO — these are the paying customers' assets:
+
+| Target Domain | DR | Ahrefs Rank | Sector |
+|---------------|-----|-------------|--------|
+| rusta.com | 70 | 115K | Retail |
+| swedoffice.se | 51 | 635K | Office supplies |
+| indoorprofessional.se | 23 | 6.7M | Cleaning services |
+
+**Insight:** DR gap between publishers (24-53) and top targets (70) shows healthy link equity flow. The backlink articles on DR 30-50 publishers pointing to DR 70 targets create genuine topical relevance signals.
+
+For lower-DR targets (indoorprofessional.se, DR 23), even DR 24-36 publisher links add meaningful equity. This validates Bacowr's "any publisher, any target" model — the semantic bridge makes the linking natural regardless of DR gap.
+
+## SEO Launch Plan (bacowr.com)
+
+### Phase 1: Foundation (Week 1)
+- [x] robots.txt + sitemap.xml
+- [x] Schema.org structured data
+- [x] OG + Twitter Card meta
+- [x] Blog index with 6 planned articles
+- [ ] Deploy landing page to Vercel/Netlify
+- [ ] Submit sitemap to Google Search Console
+- [ ] Submit sitemap to Bing Webmaster Tools
+
+### Phase 2: Content (Week 2-3)
+Target keywords based on Ahrefs data:
+
+| Article | Target Keyword | Vol | KD | Priority |
+|---------|---------------|-----|-----|----------|
+| Komplett guide till lankbygge 2026 | lankbygge | 200 | 0 | HIGH |
+| Kopa lankar ratt satt | kopa lankar | 200 | 2 | HIGH |
+| SEO-byra eller gora sjalv? | seo byra | 1,800 | 3 | HIGH |
+| AI vs manniska | ai seo artiklar | 30 | — | MEDIUM |
+| Semantic bridge forklarat | — | — | — | MEDIUM (brand) |
+| Backlink ROI-kalkylator | — | — | — | MEDIUM (conversion) |
+
+### Phase 3: Outreach (Week 4+)
+- Cold email to Swedish SEO agencies (Pineberry-types)
+- LinkedIn posts targeting digital marketing managers
+- Case study: show article quality + speed comparison
+- Consider Product Hunt launch for international reach

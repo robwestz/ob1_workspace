@@ -247,6 +247,15 @@ const DEFAULT_CONFIG: ConversationRuntimeConfig = {
   autoCompactionThreshold: 200_000,
 };
 
+// [HARDENING] Maximum retries for transient API errors (429, 500, 529).
+const MAX_API_RETRIES = 3;
+const API_RETRY_BASE_DELAY_MS = 2_000;
+
+/** Check if an error message indicates a transient/retryable API error. */
+function isRetryableApiError(errorMessage: string): boolean {
+  return /\b(429|500|502|503|529|rate.?limit|overloaded|temporarily unavailable)/i.test(errorMessage);
+}
+
 // ---------------------------------------------------------------------------
 // ConversationRuntime
 // ---------------------------------------------------------------------------
@@ -435,61 +444,107 @@ export class ConversationRuntime {
     let messageStopReason: string | null = null;
     let messageUsage: { input_tokens: number; output_tokens: number } = { input_tokens: 0, output_tokens: 0 };
 
-    try {
-      const stream = this.apiClient.stream(messages, tools, systemPrompt);
+    // [HARDENING] Retry loop for transient API errors (429 rate limit, 500/529 overload).
+    // Without this, a single 429 would terminate the entire agentic run.
+    let apiAttempt = 0;
+    let streamSucceeded = false;
+    while (apiAttempt < MAX_API_RETRIES && !streamSucceeded) {
+      apiAttempt++;
+      // Reset accumulators on retry (previous attempt produced no usable data)
+      if (apiAttempt > 1) {
+        contentBlocks.length = 0;
+        messageStopReason = null;
+        messageUsage = { input_tokens: 0, output_tokens: 0 };
+      }
 
-      for await (const event of stream) {
-        switch (event.type) {
-          case 'message_start':
-            if (event.message?.usage) messageUsage = event.message.usage;
-            break;
+      try {
+        const stream = this.apiClient.stream(messages, tools, systemPrompt);
+        let streamHadRetryableError = false;
 
-          case 'content_block_start':
-            if (event.content_block) contentBlocks.push({ ...event.content_block });
-            break;
+        for await (const event of stream) {
+          switch (event.type) {
+            case 'message_start':
+              if (event.message?.usage) messageUsage = event.message.usage;
+              break;
 
-          case 'content_block_delta':
-            if (event.index !== undefined && event.delta) {
-              const block = contentBlocks[event.index];
-              if (block) {
-                if (event.delta.type === 'text_delta' && event.delta.text) {
-                  block.text = (block.text ?? '') + event.delta.text;
-                } else if (event.delta.type === 'input_json_delta' && event.delta.partial_json) {
-                  (block as any)._rawJson = ((block as any)._rawJson ?? '') + event.delta.partial_json;
+            case 'content_block_start':
+              if (event.content_block) contentBlocks.push({ ...event.content_block });
+              break;
+
+            case 'content_block_delta':
+              if (event.index !== undefined && event.delta) {
+                const block = contentBlocks[event.index];
+                if (block) {
+                  if (event.delta.type === 'text_delta' && event.delta.text) {
+                    block.text = (block.text ?? '') + event.delta.text;
+                  } else if (event.delta.type === 'input_json_delta' && event.delta.partial_json) {
+                    (block as any)._rawJson = ((block as any)._rawJson ?? '') + event.delta.partial_json;
+                  }
                 }
               }
-            }
-            break;
+              break;
 
-          case 'content_block_stop':
-            if (event.index !== undefined) {
-              const block = contentBlocks[event.index];
-              if (block && block.type === 'tool_use' && (block as any)._rawJson) {
-                try { block.input = JSON.parse((block as any)._rawJson); } catch { block.input = {}; }
-                delete (block as any)._rawJson;
+            case 'content_block_stop':
+              if (event.index !== undefined) {
+                const block = contentBlocks[event.index];
+                if (block && block.type === 'tool_use' && (block as any)._rawJson) {
+                  try { block.input = JSON.parse((block as any)._rawJson); } catch { block.input = {}; }
+                  delete (block as any)._rawJson;
+                }
               }
+              break;
+
+            case 'message_delta':
+              if (event.usage) {
+                messageUsage = { input_tokens: messageUsage.input_tokens, output_tokens: messageUsage.output_tokens + event.usage.output_tokens };
+              }
+              if (event.delta?.stop_reason) messageStopReason = event.delta.stop_reason;
+              break;
+
+            case 'message_stop':
+              break;
+
+            case 'error': {
+              const errMsg = event.error?.message ?? 'Unknown stream error';
+              // [HARDENING] Check if this is a retryable error (429/500/529)
+              if (isRetryableApiError(errMsg) && apiAttempt < MAX_API_RETRIES) {
+                streamHadRetryableError = true;
+                await this.eventLogger.log({ category: 'error', eventType: 'stream_error_retryable', data: { error: errMsg, attempt: apiAttempt, maxRetries: MAX_API_RETRIES } });
+              } else {
+                turnErrors.push(errMsg);
+                await this.eventLogger.log({ category: 'error', eventType: 'stream_error', data: { error: errMsg } });
+              }
+              break;
             }
-            break;
-
-          case 'message_delta':
-            if (event.usage) {
-              messageUsage = { input_tokens: messageUsage.input_tokens, output_tokens: messageUsage.output_tokens + event.usage.output_tokens };
-            }
-            if (event.delta?.stop_reason) messageStopReason = event.delta.stop_reason;
-            break;
-
-          case 'message_stop':
-            break;
-
-          case 'error':
-            turnErrors.push(event.error?.message ?? 'Unknown stream error');
-            await this.eventLogger.log({ category: 'error', eventType: 'stream_error', data: { error: event.error?.message } });
-            break;
+          }
         }
+
+        if (streamHadRetryableError) {
+          // Backoff before retry
+          const delay = API_RETRY_BASE_DELAY_MS * Math.pow(2, apiAttempt - 1);
+          await this.eventLogger.log({ category: 'error', eventType: 'api_retry', data: { attempt: apiAttempt, delayMs: delay } });
+          await new Promise(r => setTimeout(r, delay));
+          continue; // retry the stream
+        }
+
+        streamSucceeded = true;
+      } catch (err: any) {
+        // [HARDENING] Retry on transient fetch-level errors (network, 429, etc.)
+        if (isRetryableApiError(err.message) && apiAttempt < MAX_API_RETRIES) {
+          const delay = API_RETRY_BASE_DELAY_MS * Math.pow(2, apiAttempt - 1);
+          await this.eventLogger.log({ category: 'error', eventType: 'api_retry', data: { error: err.message, attempt: apiAttempt, delayMs: delay } });
+          await new Promise(r => setTimeout(r, delay));
+          continue; // retry
+        }
+        turnErrors.push(`API call failed: ${err.message}`);
+        await this.eventLogger.log({ category: 'error', eventType: 'api_error', data: { error: err.message } });
+        return { stopReason: 'error', shouldContinue: false, usage: turnUsage, toolCallCount: 0, toolsCalled: [], assistantText: '', errors: turnErrors };
       }
-    } catch (err: any) {
-      turnErrors.push(`API call failed: ${err.message}`);
-      await this.eventLogger.log({ category: 'error', eventType: 'api_error', data: { error: err.message } });
+    }
+
+    if (!streamSucceeded) {
+      turnErrors.push(`API call failed after ${MAX_API_RETRIES} retries`);
+      await this.eventLogger.log({ category: 'error', eventType: 'api_error_retries_exhausted', data: { attempts: MAX_API_RETRIES } });
       return { stopReason: 'error', shouldContinue: false, usage: turnUsage, toolCallCount: 0, toolsCalled: [], assistantText: '', errors: turnErrors };
     }
 

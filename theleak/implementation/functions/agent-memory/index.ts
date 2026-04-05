@@ -98,6 +98,11 @@ async function handleMemoryStore(
     return jsonError("Missing required fields: content, memory_type, memory_scope");
   }
 
+  // SECURITY: Cap content length to prevent abuse (embedding API cost, storage bloat)
+  if (content.length > 100_000) {
+    return jsonError("content must be 100,000 characters or fewer");
+  }
+
   // Validate enums
   const validTypes = ["fact", "preference", "decision", "instruction", "observation", "context"];
   if (!validTypes.includes(memoryType)) {
@@ -200,7 +205,8 @@ async function handleMemoryRecall(
 
   const scope = (params.memory_scope as string) ?? "all";
   const memoryType = params.memory_type as string | undefined;
-  const maxResults = (params.max_results as number) ?? 10;
+  // SECURITY: Cap max_results to prevent oversized vector searches
+  const maxResults = Math.min((params.max_results as number) ?? 10, 100);
   const minSimilarity = (params.min_similarity as number) ?? 0.5;
   const includeAgedScore = (params.include_aged_score as boolean) ?? true;
 
@@ -354,6 +360,11 @@ async function handleMemoryUpdate(
     return jsonError("Missing required fields: thought_id, new_content");
   }
 
+  // SECURITY: Cap content length to prevent abuse
+  if (newContent.length > 100_000) {
+    return jsonError("new_content must be 100,000 characters or fewer");
+  }
+
   // Read the existing thought
   const { data: existing, error: readErr } = await supabase
     .from("thoughts")
@@ -459,8 +470,18 @@ async function handleMemoryConsolidate(
     return jsonError("Missing required fields: thought_ids, consolidated_content");
   }
 
+  // SECURITY: Cap content length to prevent abuse
+  if (consolidatedContent.length > 100_000) {
+    return jsonError("consolidated_content must be 100,000 characters or fewer");
+  }
+
   if (thoughtIds.length < 2) {
     return jsonError("Consolidation requires at least 2 thought IDs.");
+  }
+
+  // SECURITY: Cap array size to prevent abuse (massive IN queries, N+1 update loops)
+  if (thoughtIds.length > 50) {
+    return jsonError("Maximum 50 thought IDs per consolidation request.");
   }
 
   // Read all source thoughts
@@ -587,48 +608,9 @@ async function handleGetMemoryStats(
   supabase: SupabaseClient,
   params: Record<string, unknown>,
 ): Promise<Response> {
-  // Build a base filter to restrict counts
-  const conditions: string[] = [
-    "metadata->>'memory_scope' IS NOT NULL",
-    "(metadata->>'deleted') IS DISTINCT FROM 'true'",
-  ];
-
-  if (params.owner_id) {
-    conditions.push(`metadata->>'owner_id' = '${params.owner_id}'`);
-  }
-  if (params.team_id) {
-    conditions.push(`metadata->>'team_id' = '${params.team_id}'`);
-  }
-  if (params.project_id) {
-    conditions.push(`metadata->>'project_id' = '${params.project_id}'`);
-  }
-
-  const whereClause = conditions.join(" AND ");
-
-  // Count by scope
-  const { data: scopeCounts, error: scopeErr } = await supabase.rpc("exec_sql", {
-    query: `
-      SELECT metadata->>'memory_scope' AS scope, COUNT(*) AS count
-      FROM thoughts
-      WHERE ${whereClause}
-      GROUP BY metadata->>'memory_scope'
-      ORDER BY count DESC
-    `,
-  });
-
-  // Count by type
-  const { data: typeCounts, error: typeErr } = await supabase.rpc("exec_sql", {
-    query: `
-      SELECT metadata->>'memory_type' AS type, COUNT(*) AS count
-      FROM thoughts
-      WHERE ${whereClause}
-      GROUP BY metadata->>'memory_type'
-      ORDER BY count DESC
-    `,
-  });
-
-  // If exec_sql RPC is not available, fall back to individual queries
-  if (scopeErr || typeErr) {
+  // SECURITY: Never use exec_sql with string interpolation — SQL injection risk.
+  // Always use Supabase query builder (parameterized) for all stats queries.
+  {
     // Fallback: use individual filtered count queries
     const scopes = ["personal", "team", "project", "agent"];
     const types = ["fact", "preference", "decision", "instruction", "observation", "context"];
@@ -729,25 +711,6 @@ async function handleGetMemoryStats(
       by_age: ageBuckets,
     });
   }
-
-  // If exec_sql succeeded, parse results
-  const byScope: Record<string, number> = {};
-  for (const row of scopeCounts ?? []) {
-    byScope[row.scope] = Number(row.count);
-  }
-
-  const byType: Record<string, number> = {};
-  for (const row of typeCounts ?? []) {
-    byType[row.type] = Number(row.count);
-  }
-
-  const total = Object.values(byScope).reduce((a, b) => a + b, 0);
-
-  return jsonOk({
-    total_memories: total,
-    by_scope: byScope,
-    by_type: byType,
-  });
 }
 
 // ---------------------------------------------------------------------------

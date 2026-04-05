@@ -757,6 +757,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[agent-doctor] action=${action} error:`, message);
-    return errorResponse(`Internal error: ${message}`, 500);
+    // SECURITY: Do not leak internal error details to the client
+    return errorResponse("Internal server error", 500);
   }
 });
