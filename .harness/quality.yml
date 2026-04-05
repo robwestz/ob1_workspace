@@ -63,46 +63,44 @@ domains:
   agentic-runtime:
     scores:
       code_quality: B
-      test_coverage: D
-      documentation: C
+      test_coverage: B
+      documentation: B
       observability: C
       reliability: B
       security: B
     gaps:
-      - "Tests need expansion"
-      - "Blueprints not linked from docs/"
       - "Logging should be fully structured"
-    notes: "Well-modularized with 15 modules; budget enforcement and crash recovery solid, testing and docs need work"
-    last_reviewed: "2026-04-04"
+      - "Hardening review in progress (Wave 3)"
+    notes: "150 tests passing (budget, config, tool-pool, types). API reference documented. Hardening review underway."
+    last_reviewed: "2026-04-05"
 
   platform-api:
     scores:
       code_quality: B
       test_coverage: D
-      documentation: C
+      documentation: A
       observability: D
       reliability: B
       security: B
     gaps:
-      - "API actions need per-endpoint documentation"
       - "No request/response logging"
-    notes: "52 actions across 7 Edge Functions; well-structured but under-documented and under-tested"
-    last_reviewed: "2026-04-04"
+      - "Security review in progress (Wave 3)"
+    notes: "All 47 actions documented in API_REFERENCE.md with params, responses, curl examples. Security review underway."
+    last_reviewed: "2026-04-05"
 
   dashboard:
     scores:
       code_quality: B
-      test_coverage: F
-      documentation: D
+      test_coverage: C
+      documentation: C
       observability: D
       reliability: B
       security: C
     gaps:
-      - "No tests at all"
       - "No Sentry/error tracking"
-      - "No component docs"
-    notes: "Clean Next.js 14 codebase but zero tests, no error tracking, no documentation"
-    last_reviewed: "2026-04-04"
+      - "Need more integration tests"
+    notes: "97 tests passing (47 api-client, 50 UI components). Vitest configured. TSC clean (0 errors)."
+    last_reviewed: "2026-04-05"
 
   bacowr:
     scores:

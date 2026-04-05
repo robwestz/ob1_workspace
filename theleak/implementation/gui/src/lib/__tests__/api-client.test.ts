@@ -23,7 +23,7 @@ function mockFetch(body: unknown, status = 200) {
 }
 
 /** Inspect the last fetch call */
-function lastFetchArgs(spy: ReturnType<typeof vi.spyOn>) {
+function lastFetchArgs(spy: ReturnType<typeof mockFetch>) {
   const [url, init] = spy.mock.calls[spy.mock.calls.length - 1] as [
     string,
     RequestInit,
@@ -36,7 +36,7 @@ function lastFetchArgs(spy: ReturnType<typeof vi.spyOn>) {
 // ---------------------------------------------------------------------------
 
 describe('OB1ApiClient', () => {
-  let fetchSpy: ReturnType<typeof vi.spyOn>;
+  let fetchSpy: ReturnType<typeof mockFetch>;
 
   afterEach(() => {
     fetchSpy?.mockRestore();
