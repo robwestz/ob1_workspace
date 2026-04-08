@@ -4,6 +4,7 @@ import { loadConfig } from './config.js';
 import { registerStatusCommand } from './commands/status.js';
 import { registerLogsCommand } from './commands/logs.js';
 import { registerProjectsCommand } from './commands/projects.js';
+import { registerNightCommand } from './commands/night.js';
 
 const program = new Command();
 
@@ -19,5 +20,6 @@ const config = loadConfig();
 registerStatusCommand(program, config);
 registerLogsCommand(program, config);
 registerProjectsCommand(program, config);
+registerNightCommand(program, config);
 
 program.parse();
