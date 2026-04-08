@@ -264,9 +264,9 @@ export class GeminiProvider implements LLMProvider {
     if (Object.keys(gc).length) body.generationConfig = gc;
     if (req.tools?.length) body.tools = [{ functionDeclarations: req.tools.map((t) => ({ name: t.name, description: t.description, parameters: t.input_schema })) }];
 
-    const url = `${this.baseUrl}/v1beta/models/${req.model}:generateContent?key=${this.apiKey}`;
+    const url = `${this.baseUrl}/v1beta/models/${req.model}:generateContent`;
     const start = Date.now();
-    const raw = (await apiFetch(this.name, url, {}, body)) as Record<string, unknown>;
+    const raw = (await apiFetch(this.name, url, { 'x-goog-api-key': this.apiKey }, body)) as Record<string, unknown>;
     const latency = Date.now() - start;
 
     const candidate = (raw.candidates as Array<Record<string, unknown>>)[0];

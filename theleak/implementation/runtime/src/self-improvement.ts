@@ -286,7 +286,9 @@ export class SelfImprovement {
     try {
       const pkg = JSON.parse(await readFile(join(dir, 'package.json'), 'utf-8')) as { dependencies?: Record<string, string> };
       for (const dep of Object.keys(pkg.dependencies ?? {})) {
-        const n = parseInt(await shell(`grep -rn "${dep}" --include="*.ts" --include="*.tsx" --include="*.js" . | grep -v node_modules | grep -v package.json | wc -l`, dir, 10_000), 10);
+        if (!/^[@a-z0-9][\w./-]*$/i.test(dep)) continue; // skip suspicious dep names
+        const safeDep = dep.replace(/["`$\\]/g, '');
+        const n = parseInt(await shell(`grep -rn "${safeDep}" --include="*.ts" --include="*.tsx" --include="*.js" . | grep -v node_modules | grep -v package.json | wc -l`, dir, 10_000), 10);
         if (n === 0) details.push(`Unused dependency: ${dep}`);
       }
     } catch { /* no package.json */ }
@@ -299,7 +301,10 @@ export class SelfImprovement {
     for (const file of files.split('\n').filter(Boolean)) {
       const base = file.split('/').pop()?.replace(/\.[^.]+$/, '') ?? '';
       if (!base || base === 'index' || /\.(test|spec)$/.test(base)) continue;
-      const refs = parseInt(await shell(`grep -rn "${base}" --include="*.ts" --include="*.tsx" --include="*.js" . | grep -v "^./${file}" | wc -l`, dir, 10_000), 10);
+      if (!/^\w[\w.-]*$/.test(base)) continue; // skip names with shell-unsafe characters
+      const safeBase = base.replace(/["`$\\]/g, '');
+      const safeFile = file.replace(/["`$\\]/g, '');
+      const refs = parseInt(await shell(`grep -rn "${safeBase}" --include="*.ts" --include="*.tsx" --include="*.js" . | grep -v "^./${safeFile}" | wc -l`, dir, 10_000), 10);
       if (refs === 0) details.push(`Orphaned file: ${file}`);
     }
     return { category: 'orphaned_files', items_found: details.length, items_removed: 0, details };

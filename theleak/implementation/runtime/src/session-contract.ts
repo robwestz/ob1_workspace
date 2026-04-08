@@ -217,8 +217,13 @@ export class SessionContractManager {
     return rows.map(toRecord);
   }
 
-  /** Check if an action is within autonomous boundaries. */
+  /**
+   * Check if an action is within autonomous boundaries.
+   * IMPORTANT: requiresApproval is checked first — if an action matches both
+   * autonomous and requires_approval, the approval requirement wins.
+   */
   isAutonomous(action: string, contract: SessionContractRecord): boolean {
+    if (this.requiresApproval(action, contract)) return false;
     const lower = action.toLowerCase();
     return contract.boundaries.autonomous.some(a => lower.includes(a.toLowerCase()));
   }
