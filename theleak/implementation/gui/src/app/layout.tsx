@@ -17,6 +17,8 @@ import {
   Activity,
   Menu,
   X,
+  Wifi,
+  FileText,
 } from 'lucide-react';
 import { Providers } from './providers';
 import './globals.css';
@@ -27,6 +29,9 @@ import './globals.css';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/monitoring', label: 'Monitoring', icon: Wifi },
+  { href: '/reports', label: 'Reports', icon: FileText },
+  { href: '/activity', label: 'Activity', icon: Activity },
   { href: '/agents', label: 'Agents', icon: Bot },
   { href: '/tasks', label: 'Tasks', icon: ListTodo },
   { href: '/memory', label: 'Memory', icon: Brain },

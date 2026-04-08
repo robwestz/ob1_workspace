@@ -5,6 +5,7 @@ import { registerStatusCommand } from './commands/status.js';
 import { registerLogsCommand } from './commands/logs.js';
 import { registerProjectsCommand } from './commands/projects.js';
 import { registerNightCommand } from './commands/night.js';
+import { registerDeployCommand } from './commands/deploy.js';
 
 const program = new Command();
 
@@ -21,5 +22,6 @@ registerStatusCommand(program, config);
 registerLogsCommand(program, config);
 registerProjectsCommand(program, config);
 registerNightCommand(program, config);
+registerDeployCommand(program, config);
 
 program.parse();

@@ -848,7 +848,84 @@ export default function DashboardPage() {
           <NightRunPanel nightRun={nightRun} loading={loading} />
         </section>
 
-        {/* Row 3: Quick Actions */}
+        {/* Row 3: Project Cards */}
+        <section className="animate-slide-in">
+          <div className="flex items-center gap-2 mb-4">
+            <Activity className="w-5 h-5 text-blue-400" />
+            <h2 className="text-lg font-semibold text-slate-100">Projects</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { name: 'OB1 Runtime', desc: 'Agentic coordinator + agents', href: '/sessions', color: 'text-blue-400', bg: 'bg-blue-500/10 ring-blue-500/20' },
+              { name: 'Dashboard', desc: 'Next.js control plane', href: '/', color: 'text-emerald-400', bg: 'bg-emerald-500/10 ring-emerald-500/20' },
+              { name: 'Bacowr', desc: 'SEO engine SaaS', href: '/tools', color: 'text-purple-400', bg: 'bg-purple-500/10 ring-purple-500/20' },
+              { name: 'OB1 Control', desc: 'CLI + monitoring', href: '/monitoring', color: 'text-amber-400', bg: 'bg-amber-500/10 ring-amber-500/20' },
+            ].map((p) => (
+              <a
+                key={p.name}
+                href={p.href}
+                className="group rounded-xl border border-slate-800 bg-slate-900/50 p-4 transition-all duration-200 hover:border-slate-700/60 hover:bg-slate-800/40 hover:shadow-lg"
+              >
+                <div className={`inline-flex p-2 rounded-lg ring-1 ${p.bg} mb-3`}>
+                  <Zap className={`w-4 h-4 ${p.color}`} />
+                </div>
+                <h3 className="text-sm font-semibold text-slate-200 mb-0.5">{p.name}</h3>
+                <p className="text-xs text-slate-500">{p.desc}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* Row 4: Active Session Indicator + Last Night Summary */}
+        {nightRun && nightRun.status === 'running' && (
+          <section className="animate-fade-in">
+            <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 px-5 py-4 flex items-center gap-4">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500" />
+              </span>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-blue-300">Night session active</p>
+                <p className="text-xs text-blue-400/70">
+                  {nightRun.tasksCompleted}/{nightRun.tasksTotal} tasks completed &mdash; {formatUSD(nightRun.budgetUsed)} spent
+                </p>
+              </div>
+              <a
+                href={`/runs/${nightRun.id}`}
+                className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1"
+              >
+                View <ChevronRight className="w-3 h-3" />
+              </a>
+            </div>
+          </section>
+        )}
+
+        {nightRun && nightRun.status !== 'running' && (
+          <section className="animate-slide-in">
+            <div className="flex items-center gap-2 mb-3">
+              <Moon className="w-5 h-5 text-indigo-400" />
+              <h2 className="text-lg font-semibold text-slate-100">Last Night Run</h2>
+            </div>
+            <div className="rounded-xl border border-slate-800 bg-slate-900/50 px-5 py-4 flex items-center gap-6 text-sm">
+              <span className="text-slate-400">
+                {nightRun.tasksCompleted}/{nightRun.tasksTotal} tasks
+              </span>
+              <span className="text-slate-400">
+                {formatUSD(nightRun.budgetUsed)} / {formatUSD(nightRun.budgetLimit)}
+              </span>
+              {nightRun.durationMs != null && (
+                <span className="text-slate-400">
+                  {formatDurationMs(nightRun.durationMs)}
+                </span>
+              )}
+              <span className={`ml-auto text-xs font-medium ${nightRun.status === 'completed' ? 'text-emerald-400' : 'text-red-400'}`}>
+                {nightRun.status}
+              </span>
+            </div>
+          </section>
+        )}
+
+        {/* Row 5: Quick Actions */}
         <section className="animate-slide-in">
           <div className="flex items-center gap-2 mb-4">
             <Zap className="w-5 h-5 text-amber-400" />
@@ -858,11 +935,23 @@ export default function DashboardPage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <QuickAction
-              label="Start Night Run"
+              label="Start Night Session"
               icon={Moon}
               variant="primary"
               onClick={() => setNightRunModalOpen(true)}
             />
+            <a href="/reports">
+              <QuickAction
+                label="View Latest Report"
+                icon={Activity}
+              />
+            </a>
+            <a href="/monitoring">
+              <QuickAction
+                label="Check Deploy Status"
+                icon={Stethoscope}
+              />
+            </a>
             <QuickAction
               label="Run Doctor"
               icon={Stethoscope}
