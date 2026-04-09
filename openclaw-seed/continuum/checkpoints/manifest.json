@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "updatedAt": "2026-04-09T14:30:00.000Z",
+  "checkpoints": [
+    {
+      "id": "cp-001",
+      "label": "OB1 base setup complete",
+      "timestamp": "2026-01-20T18:45:00.000Z",
+      "description": "Supabase instance running, MCP server connected, first thoughts stored, extensions 1-3 completed"
+    },
+    {
+      "id": "cp-002",
+      "label": "Bacowr v6.3 pipeline working",
+      "timestamp": "2026-02-19T22:10:00.000Z",
+      "description": "8-phase pipeline + 11-check QA gate producing quality articles, SaaS pivot decided, bacowr.com purchased"
+    },
+    {
+      "id": "cp-003",
+      "label": "Agentic runtime compiled",
+      "timestamp": "2026-03-20T16:30:00.000Z",
+      "description": "15-module runtime with session management, budget tracking, night runner, wave runner, coordinator, crash recovery"
+    },
+    {
+      "id": "cp-004",
+      "label": "Agent harness Level 2.0",
+      "timestamp": "2026-04-01T20:00:00.000Z",
+      "description": "AGENTS.md, ARCHITECTURE.md, .harness/ with 8 config files, 6 quality gates, 107/107 checks pass"
+    },
+    {
+      "id": "cp-005",
+      "label": "OB1 Control — all 10 phases",
+      "timestamp": "2026-04-08T23:15:00.000Z",
+      "description": "SysAdmin identity, multi-model gateway, CLI, wave-runner, overnight sessions, deploy, dashboard, initiative, self-improvement, integration"
+    },
+    {
+      "id": "cp-006",
+      "label": "Knowledge Base architecture",
+      "timestamp": "2026-04-09T14:30:00.000Z",
+      "description": "Three-layer KB model (domain/methods/components), 8 templates, VISION.md, ARCHITECTURE.md, OpenClaw seed config integration decided"
+    }
+  ],
+  "latestCheckpointId": "cp-006"
+}

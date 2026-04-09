@@ -1,0 +1,41 @@
+{
+  "id": "cp-003",
+  "label": "Agentic runtime compiled",
+  "timestamp": "2026-03-20T16:30:00.000Z",
+  "context": {
+    "active_projects": ["OB1", "Bacowr", "Mac agent platform"],
+    "key_files_changed": [
+      "theleak/implementation/runtime/src/night-runner.ts",
+      "theleak/implementation/runtime/src/wave-runner.ts",
+      "theleak/implementation/runtime/src/coordinator.ts",
+      "theleak/implementation/runtime/src/budget-tracker.ts",
+      "theleak/implementation/runtime/src/session-manager.ts",
+      "theleak/implementation/runtime/src/crash-recovery.ts",
+      "theleak/implementation/runtime/src/dispatch.ts",
+      "theleak/implementation/runtime/src/config.ts",
+      "theleak/implementation/runtime/src/types.ts",
+      "theleak/implementation/runtime/src/tool-pool.ts",
+      "theleak/implementation/runtime/src/transcript-compactor.ts",
+      "theleak/implementation/runtime/src/model-registry.ts",
+      "theleak/implementation/runtime/src/morning-report.ts",
+      "theleak/implementation/runtime/src/quality-gate-runner.ts",
+      "theleak/implementation/runtime/src/session-contract.ts"
+    ],
+    "decisions_made": [
+      "Wave protocol is the core execution model, not batch dispatch",
+      "Budget tracking is a first-class concern, not an afterthought",
+      "Night runner manages the wave loop with wall-clock enforcement",
+      "Coordinator handles multi-agent dispatch within waves",
+      "Crash recovery persists state so crashed sessions can resume",
+      "Model registry enables multi-model routing (Claude, Codex, Gemini)",
+      "Morning report is updated per-wave, not just at session end",
+      "Quality gates run automatically between waves"
+    ],
+    "next_priorities": [
+      "Deploy runtime to Mac via Tailscale",
+      "First real overnight session with full wave protocol",
+      "Agent-first harness for quality gates",
+      "Next.js dashboard for monitoring"
+    ]
+  }
+}

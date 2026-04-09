@@ -1,0 +1,37 @@
+{
+  "id": "cp-006",
+  "label": "Knowledge Base architecture",
+  "timestamp": "2026-04-09T14:30:00.000Z",
+  "context": {
+    "active_projects": ["OB1 Control", "Bacowr SaaS", "Knowledge Base", "OpenClaw seed"],
+    "key_files_changed": [
+      "knowledge-base/VISION.md",
+      "knowledge-base/ARCHITECTURE.md",
+      "knowledge-base/INDEX.md",
+      "knowledge-base/_templates/",
+      "knowledge-base/_system/",
+      "knowledge-base/domain/",
+      "knowledge-base/methods/",
+      "knowledge-base/components/",
+      "knowledge-base/raw/openclaw-config-research.md",
+      "openclaw-seed/workspace/IDENTITY.md",
+      "openclaw-seed/openclaw.json"
+    ],
+    "decisions_made": [
+      "Three-layer KB: domain (what we know), methods (how we do it), components (reusable parts)",
+      "8 standardized templates for different knowledge types",
+      "OpenClaw integration: pre-build a 10-month-old config seed, not start from scratch",
+      "Memory architecture: daily markdown logs + curated MEMORY.md + vector index for semantic search",
+      "Continuum checkpoints at major milestones for state snapshots",
+      "Evaluating DigitalOcean droplet vs Mac for OpenClaw deployment",
+      "SysAdmin identity fully specified: Swedish-fluent, production-grade, wave-protocol native"
+    ],
+    "next_priorities": [
+      "Complete OpenClaw seed files (workspace, memory logs, auth profiles, sessions)",
+      "Test seed config on fresh OpenClaw installation",
+      "Populate KB domain/ with SEO and agent architecture knowledge",
+      "DigitalOcean droplet provisioning and testing",
+      "First overnight session using OpenClaw as the execution platform"
+    ]
+  }
+}

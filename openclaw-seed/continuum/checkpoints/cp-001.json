@@ -1,0 +1,26 @@
+{
+  "id": "cp-001",
+  "label": "OB1 base setup complete",
+  "timestamp": "2026-01-20T18:45:00.000Z",
+  "context": {
+    "active_projects": ["OB1"],
+    "key_files_changed": [
+      "supabase/migrations/001_thoughts_table.sql",
+      "supabase/functions/agent-memory/index.ts",
+      "docs/01-getting-started.md"
+    ],
+    "decisions_made": [
+      "Fork OB1 for own workspace instead of just following curriculum",
+      "Supabase eu-north-1 (Stockholm) for low latency",
+      "pgvector dimension 1536 (OpenAI ada-002 embeddings)",
+      "MCP via Edge Functions, not local stdio servers",
+      "Claude Desktop custom connectors for MCP connection"
+    ],
+    "next_priorities": [
+      "Build useful content in thoughts table beyond test data",
+      "Explore recipes for standalone capabilities",
+      "Define what production infrastructure means for this workspace",
+      "Consider first real project to build on the platform"
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "id": "cp-004",
+  "label": "Agent harness Level 2.0",
+  "timestamp": "2026-04-01T20:00:00.000Z",
+  "context": {
+    "active_projects": ["OB1", "Bacowr", "Mac agent platform"],
+    "key_files_changed": [
+      "AGENTS.md",
+      "ARCHITECTURE.md",
+      ".harness/principles.yml",
+      ".harness/quality.yml",
+      ".harness/domains.yml",
+      ".harness/enforcement.yml",
+      ".harness/config.yml",
+      ".harness/knowledge.yml",
+      "docs/design-docs/long-session-protocol.md"
+    ],
+    "decisions_made": [
+      "Agent-first repos need AGENTS.md as a TOC for AI, not just README for humans",
+      "Harness is constraints + knowledge maps + quality gates, not limitations",
+      "Fix broken things first — failing tests are always priority one",
+      "Level 2.0 = full .harness/ directory (Level 1 = AGENTS.md only)",
+      "107 automated checks define the quality baseline",
+      "Enforcement split: automated (compile, test, lint) vs manual (architecture review)",
+      "Long session protocol formalized as wave contract document"
+    ],
+    "next_priorities": [
+      "Integrate harness with night runner quality gates",
+      "Run first harness-enforced overnight session",
+      "Agent initiative system — agents find work, not just execute it",
+      "Bacowr SaaS frontend sprint"
+    ]
+  }
+}

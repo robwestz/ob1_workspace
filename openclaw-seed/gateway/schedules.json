@@ -1,0 +1,23 @@
+{
+  "sched-a1b2c3d4": {
+    "id": "sched-a1b2c3d4",
+    "name": "morning-report",
+    "cron": "30 6 * * *",
+    "command": "Generate the morning report for the last overnight session. Include: waves completed, budget spent, key findings, open items.",
+    "enabled": true
+  },
+  "sched-e5f6a7b8": {
+    "id": "sched-e5f6a7b8",
+    "name": "health-check",
+    "cron": "0 */4 * * *",
+    "command": "Run health checks on all OB1 services: Supabase, runtime, dashboard, Bacowr worker. Report any issues.",
+    "enabled": true
+  },
+  "sched-c9d0e1f2": {
+    "id": "sched-c9d0e1f2",
+    "name": "doc-gardening",
+    "cron": "0 10 * * 1",
+    "command": "Run doc-gardening: verify all paths in AGENTS.md exist, check cross-links in docs/, update stale references.",
+    "enabled": true
+  }
+}

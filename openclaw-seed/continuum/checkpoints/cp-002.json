@@ -1,0 +1,29 @@
+{
+  "id": "cp-002",
+  "label": "Bacowr v6.3 pipeline working",
+  "timestamp": "2026-02-19T22:10:00.000Z",
+  "context": {
+    "active_projects": ["OB1", "Bacowr"],
+    "key_files_changed": [
+      "projects/Bacowr-v6.3/engine.py",
+      "projects/Bacowr-v6.3/pipeline.py",
+      "projects/Bacowr-v6.3/models.py",
+      "projects/Bacowr-v6.3/article_validator.py"
+    ],
+    "decisions_made": [
+      "SaaS pivot: Bacowr is a service, not just a tool",
+      "8-phase pipeline architecture finalized",
+      "11-check QA gate with 85% uniqueness threshold",
+      "Claude for writing, OpenAI for embeddings, Gemini for large-context research",
+      "Stripe via GitHub Student Developer Pack for payment",
+      "Publisher voice matching via scraping and fingerprinting",
+      "AI tells detector to catch common LLM patterns"
+    ],
+    "next_priorities": [
+      "Build SaaS frontend (customer dashboard, job upload, article download)",
+      "Stripe integration for payment processing",
+      "Deploy pipeline as background worker",
+      "Infrastructure for running Bacowr jobs at scale via OB1"
+    ]
+  }
+}

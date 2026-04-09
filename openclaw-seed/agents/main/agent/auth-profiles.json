@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "profiles": {
+    "anthropic:robincamjo": {
+      "type": "token",
+      "provider": "anthropic",
+      "token": "<ANTHROPIC_API_KEY>"
+    },
+    "openai-codex:default": {
+      "type": "oauth",
+      "provider": "openai-codex",
+      "access": "<OPENAI_CODEX_ACCESS_TOKEN>",
+      "refresh": "<OPENAI_CODEX_REFRESH_TOKEN>",
+      "expires": 0,
+      "accountId": "<OPENAI_ACCOUNT_ID>"
+    },
+    "google:default": {
+      "type": "token",
+      "provider": "google",
+      "token": "<GOOGLE_API_KEY>"
+    }
+  },
+  "lastGood": {
+    "anthropic": "anthropic:robincamjo",
+    "openai-codex": "openai-codex:default",
+    "google": "google:default"
+  },
+  "usageStats": {
+    "anthropic:robincamjo": {
+      "lastUsed": "__TIMESTAMP_MS__",
+      "errorCount": 3,
+      "lastFailureAt": 1742400000000
+    },
+    "openai-codex:default": {
+      "lastUsed": "__TIMESTAMP_MS__",
+      "errorCount": 1,
+      "lastFailureAt": 1745000000000
+    },
+    "google:default": {
+      "lastUsed": "__TIMESTAMP_MS__",
+      "errorCount": 0
+    }
+  }
+}
