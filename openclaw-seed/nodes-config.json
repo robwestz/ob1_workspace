@@ -1,0 +1,212 @@
+{
+  "$schema": "https://docs.openclaw.ai/schemas/nodes-config.json",
+  "_comment": "Node mesh configuration for three-node setup: DO Droplet (gateway) + MacBook Air M2 (agent exec) + Windows PC (dev)",
+
+  "nodes": {
+    "mac-agent": {
+      "displayName": "Mac Agent",
+      "description": "MacBook Air M2 — primary agent execution host for macOS-specific tasks, builds, and long-running operations",
+      "role": "node",
+      "transport": {
+        "host": "<DROPLET_TAILSCALE_IP_OR_MAGICDNS>",
+        "port": 18789,
+        "tls": false
+      },
+      "capabilities": {
+        "system": ["system.run", "system.which", "system.execApprovals.get", "system.execApprovals.set"],
+        "browser": ["browser.proxy"]
+      },
+      "execApprovals": {
+        "security": "allowlist",
+        "ask": "on-miss",
+        "allowlist": [
+          "/bin/sh",
+          "/bin/bash",
+          "/bin/zsh",
+          "/usr/bin/git",
+          "/usr/bin/uname",
+          "/usr/bin/sw_vers",
+          "/usr/bin/xcodebuild",
+          "/usr/local/bin/brew",
+          "/usr/local/bin/node",
+          "/usr/local/bin/npm",
+          "/usr/local/bin/npx",
+          "/usr/local/bin/bun",
+          "/usr/local/bin/python3",
+          "/usr/local/bin/pip3",
+          "/usr/bin/curl",
+          "/usr/bin/ssh",
+          "/usr/bin/scp",
+          "/usr/bin/rsync",
+          "/usr/bin/tar",
+          "/usr/bin/zip",
+          "/usr/bin/unzip",
+          "/usr/sbin/system_profiler",
+          "git",
+          "node",
+          "npm",
+          "npx",
+          "bun",
+          "python3",
+          "brew",
+          "curl",
+          "make",
+          "cargo",
+          "docker"
+        ]
+      },
+      "agentBindings": {
+        "main": true,
+        "ops": true,
+        "sysadmin": true
+      },
+      "service": {
+        "install": true,
+        "runtime": "node",
+        "restartPolicy": "always"
+      }
+    },
+
+    "windows-dev": {
+      "displayName": "Windows Dev",
+      "description": "Windows 11 PC — development workstation, secondary execution node, optional for agent tasks",
+      "role": "node",
+      "transport": {
+        "host": "<DROPLET_TAILSCALE_IP_OR_MAGICDNS>",
+        "port": 18789,
+        "tls": false
+      },
+      "capabilities": {
+        "system": ["system.run", "system.which", "system.execApprovals.get", "system.execApprovals.set"],
+        "browser": ["browser.proxy"]
+      },
+      "execApprovals": {
+        "security": "allowlist",
+        "ask": "on-miss",
+        "allowlist": [
+          "cmd.exe",
+          "powershell.exe",
+          "pwsh.exe",
+          "git",
+          "git.exe",
+          "node",
+          "node.exe",
+          "npm",
+          "npm.cmd",
+          "npx",
+          "npx.cmd",
+          "bun",
+          "bun.exe",
+          "python",
+          "python.exe",
+          "pip",
+          "pip.exe",
+          "curl",
+          "curl.exe",
+          "docker",
+          "docker.exe",
+          "cargo",
+          "cargo.exe",
+          "code",
+          "code.cmd",
+          "ssh",
+          "ssh.exe",
+          "scp",
+          "scp.exe",
+          "tar",
+          "tar.exe"
+        ]
+      },
+      "agentBindings": {
+        "dev": true,
+        "coding": true
+      },
+      "service": {
+        "install": true,
+        "runtime": "node",
+        "restartPolicy": "always"
+      }
+    },
+
+    "do-droplet": {
+      "displayName": "DO Droplet",
+      "description": "DigitalOcean Ubuntu droplet — primary gateway host, always-on, handles messaging channels and model invocation",
+      "role": "gateway",
+      "isGateway": true,
+      "transport": {
+        "bind": "tailnet",
+        "port": 18789,
+        "tailscale": {
+          "mode": "serve",
+          "resetOnExit": false
+        }
+      },
+      "notes": "This machine runs the gateway service. It is NOT a node — it is the hub that nodes connect to."
+    }
+  },
+
+  "mesh": {
+    "name": "robin-agent-mesh",
+    "topology": "star",
+    "hub": "do-droplet",
+    "networkLayer": "tailscale",
+    "tailscale": {
+      "tailnet": "<YOUR_TAILNET_NAME>",
+      "magicDns": true,
+      "devices": {
+        "do-droplet": "<DROPLET_MAGICDNS>.ts.net",
+        "mac-agent": "<MACBOOK_MAGICDNS>.ts.net",
+        "windows-dev": "<WINDOWS_MAGICDNS>.ts.net"
+      }
+    },
+    "auth": {
+      "gatewayTokenEnvVar": "OPENCLAW_GATEWAY_TOKEN",
+      "devicePairing": true,
+      "autoApproveLocal": true,
+      "challengeResponse": true
+    }
+  },
+
+  "routing": {
+    "defaultExecHost": "node",
+    "defaultNode": "mac-agent",
+    "perAgent": {
+      "main": { "node": "mac-agent" },
+      "ops": { "node": "mac-agent" },
+      "sysadmin": { "node": "mac-agent" },
+      "dev": { "node": "windows-dev" },
+      "coding": { "node": "windows-dev" }
+    }
+  },
+
+  "monitoring": {
+    "heartbeatCheckNodes": true,
+    "alertOnDisconnect": true,
+    "alertChannel": "whatsapp",
+    "bootCheckNodes": true
+  },
+
+  "setup": {
+    "instructions": {
+      "step1": "Install Tailscale on all three machines and join the same tailnet",
+      "step2": "On the droplet: configure gateway with bind=tailnet and start openclaw gateway",
+      "step3": "On the Mac: export OPENCLAW_GATEWAY_TOKEN and run openclaw node install --host <droplet> --port 18789 --display-name 'Mac Agent'",
+      "step4": "On the droplet: openclaw nodes pending && openclaw nodes approve <requestId>",
+      "step5": "On Windows: repeat step 3-4 with display-name 'Windows Dev'",
+      "step6": "On the droplet: openclaw config set tools.exec.host node && openclaw config set tools.exec.node 'Mac Agent'",
+      "step7": "Verify: openclaw nodes status (all nodes connected)"
+    },
+    "verification": {
+      "commands": [
+        "openclaw health",
+        "openclaw nodes status",
+        "openclaw nodes describe --node 'Mac Agent'",
+        "openclaw nodes describe --node 'Windows Dev'",
+        "openclaw nodes run --node 'Mac Agent' -- uname -a",
+        "openclaw nodes run --node 'Windows Dev' --raw 'hostname'",
+        "openclaw doctor",
+        "openclaw security audit"
+      ]
+    }
+  }
+}

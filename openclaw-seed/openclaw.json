@@ -26,9 +26,42 @@
     }
   },
   "agents": {
+    "list": [
+      {
+        "id": "main",
+        "tools": {
+          "exec": {
+            "host": "node",
+            "node": "Mac Agent"
+          }
+        }
+      },
+      {
+        "id": "ops",
+        "tools": {
+          "exec": {
+            "host": "node",
+            "node": "Mac Agent"
+          }
+        }
+      },
+      {
+        "id": "dev",
+        "tools": {
+          "exec": {
+            "host": "node",
+            "node": "Windows Dev"
+          }
+        }
+      }
+    ],
     "defaults": {
       "model": {
-        "primary": "anthropic/claude-opus-4-6"
+        "primary": "anthropic/claude-sonnet-4-6",
+        "fallbacks": [
+          "anthropic/claude-haiku-4-5",
+          "openai/gpt-5.1-codex"
+        ]
       },
       "workspace": "~/.openclaw/workspace",
       "contextPruning": {
@@ -46,14 +79,148 @@
         }
       },
       "heartbeat": {
-        "every": "30m"
+        "every": "30m",
+        "model": "anthropic/claude-opus-4-6",
+        "activeHours": { "start": "07:00", "end": "24:00" },
+        "includeReasoning": true
       },
       "maxConcurrent": 4,
       "subagents": {
-        "maxConcurrent": 8
+        "maxSpawnDepth": 2,
+        "maxChildrenPerAgent": 5,
+        "maxConcurrent": 8,
+        "model": "anthropic/claude-sonnet-4-6",
+        "archiveAfterMinutes": 60
+      },
+      "conductor": {
+        "defaultProvider": "anthropic/claude-sonnet-4-6",
+        "rules": [
+          {
+            "match": { "type": "domain", "tags": ["security", "auth", "crypto", "payment"] },
+            "assign": "anthropic/claude-opus-4-6",
+            "priority": 30
+          },
+          {
+            "match": { "type": "domain", "tags": ["seo", "content", "crawl", "scrape"] },
+            "assign": "openai/codex-5-3",
+            "priority": 30
+          },
+          {
+            "match": { "type": "name", "pattern": "*architecture*" },
+            "assign": "anthropic/claude-opus-4-6",
+            "priority": 25
+          },
+          {
+            "match": { "type": "name", "pattern": "*test*" },
+            "assign": "anthropic/claude-sonnet-4-6",
+            "priority": 25
+          },
+          {
+            "match": { "type": "name", "pattern": "*doc*" },
+            "assign": "anthropic/claude-haiku-4-5",
+            "priority": 25
+          },
+          {
+            "match": { "type": "name", "pattern": "*format*" },
+            "assign": "anthropic/claude-haiku-4-5",
+            "priority": 25
+          },
+          {
+            "match": { "type": "domain", "tags": ["orchestration", "conductor", "architecture", "pipeline", "engine"] },
+            "assign": "anthropic/claude-opus-4-6",
+            "priority": 20
+          },
+          {
+            "match": { "type": "domain", "tags": ["adapter", "handler", "builder", "router", "monitor"] },
+            "assign": "anthropic/claude-sonnet-4-6",
+            "priority": 20
+          },
+          {
+            "match": { "type": "domain", "tags": ["validator", "formatter", "template", "config", "util", "schema"] },
+            "assign": "anthropic/claude-haiku-4-5",
+            "priority": 20
+          },
+          {
+            "match": { "type": "complexity", "level": "high" },
+            "assign": "anthropic/claude-opus-4-6",
+            "priority": 10
+          },
+          {
+            "match": { "type": "complexity", "level": "medium" },
+            "assign": "anthropic/claude-sonnet-4-6",
+            "priority": 10
+          },
+          {
+            "match": { "type": "complexity", "level": "low" },
+            "assign": "anthropic/claude-haiku-4-5",
+            "priority": 10
+          }
+        ],
+        "overrides": {
+          "payment-processor": "anthropic/claude-opus-4-6",
+          "session-manager": "anthropic/claude-opus-4-6",
+          "seo-bulk-writer": "openai/codex-5-3",
+          "email-template-gen": "anthropic/claude-haiku-4-5",
+          "config-validator": "anthropic/claude-haiku-4-5"
+        },
+        "costCaps": {
+          "perSessionUsd": 50,
+          "perWaveUsd": 25,
+          "alertThresholds": [50, 75, 90, 100]
+        },
+        "fallbackChains": {
+          "anthropic/claude-opus-4-6": ["anthropic/claude-sonnet-4-6", "openai/gpt-5.1-codex"],
+          "anthropic/claude-sonnet-4-6": ["anthropic/claude-haiku-4-5", "openai/gpt-5.1-codex"],
+          "openai/codex-5-3": ["anthropic/claude-sonnet-4-6", "anthropic/claude-haiku-4-5"],
+          "anthropic/claude-haiku-4-5": ["openai/gpt-5.1-codex"]
+        },
+        "complexityThresholds": {
+          "high": 0.6,
+          "medium": 0.3
+        }
       },
       "memorySearch": {
-        "provider": "openai"
+        "provider": "openai",
+        "model": "text-embedding-3-small",
+        "query": {
+          "hybrid": {
+            "enabled": true,
+            "vectorWeight": 0.7,
+            "textWeight": 0.3,
+            "candidateMultiplier": 4,
+            "mmr": {
+              "enabled": true,
+              "lambda": 0.7
+            },
+            "temporalDecay": {
+              "enabled": true,
+              "halfLifeDays": 30
+            }
+          }
+        },
+        "experimental": {
+          "sessionMemory": true
+        },
+        "sources": ["memory", "sessions"],
+        "cache": {
+          "enabled": true,
+          "maxEntries": 50000
+        },
+        "extraPaths": ["../knowledge-base/domain", "../knowledge-base/methods"],
+        "remote": {
+          "batch": {
+            "enabled": true,
+            "concurrency": 2
+          }
+        },
+        "sync": {
+          "watch": true,
+          "sessions": {
+            "deltaBytes": 100000,
+            "deltaMessages": 50
+          }
+        },
+        "fallback": "openai"
       }
     }
   },
@@ -96,13 +263,14 @@
   "gateway": {
     "port": 18789,
     "mode": "local",
-    "bind": "loopback",
+    "bind": "tailnet",
     "auth": {
       "mode": "token",
-      "token": "<GATEWAY_TOKEN_48HEX>"
+      "token": "<GATEWAY_TOKEN_48HEX>",
+      "allowTailscale": true
     },
     "tailscale": {
-      "mode": "off",
+      "mode": "serve",
       "resetOnExit": false
     },
     "reload": {
@@ -128,8 +296,27 @@
     }
   },
   "plugins": {
+    "slots": {
+      "memory": "memory-core"
+    },
     "entries": {
       "whatsapp": {
+        "enabled": true
+      },
+      "memory-lancedb": {
+        "enabled": false,
+        "config": {
+          "embedding": {
+            "apiKey": "${OPENAI_API_KEY}",
+            "model": "text-embedding-3-small"
+          },
+          "dbPath": "~/.openclaw/memory/lancedb",
+          "autoCapture": true,
+          "autoRecall": true,
+          "captureMaxChars": 500
+        }
+      },
+      "open-prose": {
         "enabled": true
       }
     }
@@ -140,10 +327,59 @@
     "maxConcurrentRuns": 2,
     "sessionRetention": "24h"
   },
-  "tools": {},
+  "tools": {
+    "exec": {
+      "host": "node",
+      "security": "allowlist",
+      "ask": "on-miss",
+      "node": "Mac Agent",
+      "notifyOnExit": true,
+      "applyPatch": {
+        "enabled": true
+      }
+    },
+    "agentToAgent": {
+      "enabled": true,
+      "allow": ["main", "ops", "sysadmin", "dev", "coding"]
+    },
+    "alsoAllow": ["lobster"],
+    "sessions": {
+      "visibility": "tree"
+    }
+  },
   "env": {},
   "memory": {
-    "backend": "builtin"
+    "backend": "builtin",
+    "citations": "auto",
+    "qmd": {
+      "includeDefaultMemory": true,
+      "searchMode": "search",
+      "update": {
+        "interval": "5m",
+        "debounceMs": 15000,
+        "onBoot": true,
+        "waitForBootSync": false,
+        "commandTimeoutMs": 30000,
+        "updateTimeoutMs": 60000,
+        "embedTimeoutMs": 120000
+      },
+      "limits": {
+        "maxResults": 6,
+        "maxSnippetChars": 700,
+        "timeoutMs": 4000
+      },
+      "sessions": {
+        "enabled": true,
+        "retentionDays": 30
+      },
+      "paths": [
+        {
+          "name": "knowledge-base",
+          "path": "../knowledge-base",
+          "pattern": "**/*.md"
+        }
+      ]
+    }
   },
   "logging": {},
   "identity": {},

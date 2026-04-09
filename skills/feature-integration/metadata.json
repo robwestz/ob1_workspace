@@ -1,0 +1,21 @@
+{
+  "name": "Feature Integration",
+  "description": "Systematic platform feature integration from discovery to production config, KB articles, method guides, and optional skills.",
+  "category": "skills",
+  "author": {
+    "name": "Robin Westerlund",
+    "github": "robinwesterlund"
+  },
+  "version": "1.0.0",
+  "requires": {
+    "open_brain": true,
+    "services": [],
+    "tools": ["Claude Code or similar AI coding tool with reusable skills/system prompts"]
+  },
+  "tags": ["openclaw", "integration", "method", "knowledge-base", "platform", "configuration"],
+  "difficulty": "advanced",
+  "estimated_time": "60-120 minutes per feature",
+  "created": "2026-04-05",
+  "updated": "2026-04-05",
+  "dependencies": ["research-synthesis", "claudeception"]
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Feature Integration Method",
+  "layer": "methods",
+  "category": "process",
+  "format": "method-guide",
+  "tags": ["integration", "process", "openclaw", "platform"],
+  "cross_references": ["research-synthesis", "claudeception", "200k-standard"],
+  "maturity": "confirmed",
+  "last_verified": "2026-04-05"
+}
